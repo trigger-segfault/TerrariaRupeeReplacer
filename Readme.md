@@ -1,7 +1,7 @@
 # Terraria Rupee Replacer ![AppIcon](http://i.imgur.com/RmM4SEj.png)
-Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupees. From images and sounds, to text and text color. The program also allows the user to select which color rupees to use.
+Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupees. From sprites and sounds, to text and text color. The program also allows the user to select which color rupees to use.
 
-**Note:** Although a RupeeConfig.xml file is created in the Terraria executable directory, modifying this will not change rupee sprites. RupeeConfig.xml is for internal use only. You must restore & patch in order to change rupee colors.
+**Note:** Although a RupeeConfig.xml file is created in the Terraria executable directory, modifying this will not change rupee sprites. RupeeConfig.xml is for internal use only. Instead you can use the Update Rupees option in the patcher to only modify the content files.
 
 ![Rupees](http://i.imgur.com/iKEQ5Uf.png)
 
