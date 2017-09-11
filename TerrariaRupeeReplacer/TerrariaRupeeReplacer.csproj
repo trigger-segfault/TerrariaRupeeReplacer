@@ -185,9 +185,6 @@
     <Resource Include="App.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Background.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Icons\About.png" />
   </ItemGroup>
   <ItemGroup>

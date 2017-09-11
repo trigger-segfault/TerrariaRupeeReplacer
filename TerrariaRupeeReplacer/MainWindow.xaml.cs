@@ -359,6 +359,26 @@ namespace TerrariaRupeeReplacer {
 				return;
 			}
 		}
+		private void OnUpdateRupees(object sender, RoutedEventArgs e) {
+			MessageBoxResult result;
+			if (!ValidPathTest())
+				return;
+			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to update the rupee content files?", "Update Rupees", MessageBoxButton.YesNo);
+			if (result == MessageBoxResult.No)
+				return;
+			try {
+				ContentReplacer.Replace();
+				SaveRupeeConfigXml();
+				TriggerMessageBox.Show(this, MessageIcon.Info, "Rupee content files successfully updated!", "Rupees Updated");
+			}
+			catch (Exception ex) {
+				result = TriggerMessageBox.Show(this, MessageIcon.Error, "An error occurred while updating rupee content files! Would you like to see the error?", "Patch Error", MessageBoxButton.YesNo);
+				if (result == MessageBoxResult.Yes)
+					ErrorMessageBox.Show(ex, true);
+				return;
+			}
+		}
+
 		#endregion
 		//--------------------------------
 		#region Settings

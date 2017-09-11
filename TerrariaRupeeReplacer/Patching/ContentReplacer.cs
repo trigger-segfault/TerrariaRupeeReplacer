@@ -106,6 +106,45 @@ namespace TerrariaRupeeReplacer.Patching {
 		//========== REPLACING ===========
 		#region Replacing
 
+		/**<summary>Create images displaying all of the rupees.</summary>*/
+		/*static ContentReplacer() {
+			int spacing = 14;
+			int heightOffset = 4;
+			var rupeeColors = (RupeeColors[])Enum.GetValues(typeof(RupeeColors));
+			List<Bitmap> rupeeImages = new List<Bitmap>();
+			foreach (RupeeColors color in rupeeColors) {
+				rupeeImages.Add(GetImage(ImageTypes.Animation, color));
+			}
+			for (int i = 0; i < 4; i++) {
+				Bitmap gBmp = new Bitmap(spacing + rupeeColors.Length * (10 + spacing), 22 + heightOffset * 2, PixelFormat.Format32bppArgb);
+				using (Graphics g = Graphics.FromImage(gBmp)) {
+					g.Clear(Color.White);
+					g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+					for (int j = 0; j < rupeeColors.Length; j++) {
+						g.DrawImage(
+							rupeeImages[j],
+							spacing + j * (10 + spacing), heightOffset,
+							new Rectangle(0, 2 + ((i + j) % 4) * 24, 10, 22),
+							GraphicsUnit.Pixel
+						);
+					}
+				}
+				gBmp.Save("Rupees" + i + ".png", ImageFormat.Png);
+			}
+			Bitmap gBmp2 = new Bitmap(spacing + rupeeColors.Length * (10 + spacing), 22 + heightOffset * 2, PixelFormat.Format32bppArgb);
+			using (Graphics g = Graphics.FromImage(gBmp2)) {
+				g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+				for (int j = 0; j < rupeeColors.Length; j++) {
+					g.DrawImage(
+						rupeeImages[j],
+						spacing + j * (10 + spacing), heightOffset,
+						new Rectangle(0, 2, 10, 22),
+						GraphicsUnit.Pixel
+					);
+				}
+			}
+			gBmp2.Save("Rupees.png", ImageFormat.Png);
+		}*/
 		/**<summary>Restores the backed up content files.</summary>*/
 		public static bool Restore() {
 			bool someMissing = false;
@@ -163,6 +202,7 @@ namespace TerrariaRupeeReplacer.Patching {
 
 			Bitmap gBmp = new Bitmap(dustBmp);
 			using (Graphics g = Graphics.FromImage(gBmp)) {
+				g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 				Point point = new Point(440, 60);
 				int spacing = 10;
 				g.DrawImage(GetImage(ImageTypes.Dust, Copper), point);		point.X += spacing;

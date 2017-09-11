@@ -379,7 +379,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			return ScanForNthInstructionPattern(m, 0, 0, inst);
 		}
 		public static int ScanForNthInstructionPattern(MethodDefinition m, int n, params ILCheck[] inst) {
-			return ScanForNthInstructionPattern(m, 0, 0, inst);
+			return ScanForNthInstructionPattern(m, n, 0, inst);
 		}
 		public static int ScanForInstructionPattern(MethodDefinition m, int nStartOffset, params ILCheck[] inst) {
 			return ScanForNthInstructionPattern(m, 0, nStartOffset, inst);
