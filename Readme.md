@@ -3,8 +3,6 @@ Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupee
 
 **Note:** Although a RupeeConfig.xml file is created in the Terraria executable directory, modifying this will not change rupee sprites. RupeeConfig.xml is for internal use only. Instead you can use the Update Rupees option in the patcher to only modify the content files.
 
-![Rupees](http://i.imgur.com/iKEQ5Uf.png)
-
 ![Window Preview](http://i.imgur.com/NYvb6rJ.png)
 
 ### [Wiki](https://github.com/trigger-death/TerrariaRupeeReplacer/wiki) | [Credits](https://github.com/trigger-death/TerrariaRupeeReplacer/wiki/Credits) | [Image Album](http://imgur.com/a/4LfHT)
@@ -29,6 +27,10 @@ Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupee
 * XNA 4.0 Refresh | [VS 2015 Installer](https://mxa.codeplex.com/releases/view/618279)
 * Terraria.exe | *Place in solution folder*
 * Terraria.Libraries.ReLogic.ReLogic.dll | *Save from Terraria.exe and place in solution folder*
+
+## Rupee Colors
+
+![Rupees](http://i.imgur.com/iKEQ5Uf.png)
 
 ## Modifies
 * Changes coin sprites and animations.
