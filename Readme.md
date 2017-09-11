@@ -5,7 +5,7 @@ Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupee
 
 ![Rupees](http://i.imgur.com/iKEQ5Uf.png)
 
-![Window Preview](http://i.imgur.com/4QcNOF5.png)
+![Window Preview](http://i.imgur.com/NYvb6rJ.png)
 
 ### [Wiki](https://github.com/trigger-death/TerrariaRupeeReplacer/wiki) | [Credits](https://github.com/trigger-death/TerrariaRupeeReplacer/wiki/Credits) | [Image Album](http://imgur.com/a/4LfHT)
 
