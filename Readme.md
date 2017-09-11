@@ -26,7 +26,7 @@ Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupee
 * Newtonsoft.Json | [Nuget Package](https://www.nuget.org/packages/Newtonsoft.Json/)
 * XNA 4.0 Refresh | [VS 2015 Installer](https://mxa.codeplex.com/releases/view/618279)
 * Terraria.exe | *Place in solution folder*
-* Terraria.Libraries.ReLogic.ReLogic.dll | *Save from Terraria.exe and place in solution folder*
+* Terraria.Libraries.ReLogic.ReLogic.dll | *Extract from Terraria.exe and place in solution folder*
 
 ## Rupee Colors
 
