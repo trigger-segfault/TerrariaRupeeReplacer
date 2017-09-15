@@ -3,16 +3,16 @@ Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupee
 
 **Note:** Although a RupeeConfig.xml file is created in the Terraria executable directory, modifying this will not change rupee sprites. RupeeConfig.xml is for internal use only. Instead you can use the Update Rupees option in the patcher to only modify the content files.
 
-![Window Preview](http://i.imgur.com/NYvb6rJ.png)
+![Window Preview](https://i.imgur.com/BaNpEDJ.png)
 
 ### [Wiki](https://github.com/trigger-death/TerrariaRupeeReplacer/wiki) | [Credits](https://github.com/trigger-death/TerrariaRupeeReplacer/wiki/Credits) | [Image Album](http://imgur.com/a/4LfHT)
 
-### [![Get Terraria Rupee Replacer](http://i.imgur.com/h7h8ES2.png)](https://github.com/trigger-death/TerrariaRupeeReplacer/releases/tag/1.0.0.0)
+### [![Get Terraria Rupee Replacer](http://i.imgur.com/h7h8ES2.png)](https://github.com/trigger-death/TerrariaRupeeReplacer/releases/tag/1.0.1.0)
 
 ## About
 
 * **Created By:** Robert Jordan
-* **Version:** 1.0.0.0
+* **Version:** 1.0.1.0
 * **Language:** C#, WPF
 * **Supports:** Vanilla v1.3.5.3 | tModLoader v0.10.1 (v1.3.5.1)
 
@@ -42,3 +42,8 @@ Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupee
 * Changes death dropped coins text.
 * Changes coin movement glow color.
 * Changes coin names.
+* Changes all references to coins into rupees.
+* Resprites the Coin Gun (optional)
+* Resprites the Lucky Coin (optional)
+* Resprites the Coin Ring (optional)
+* Resprites the Coin Portal (optional)
