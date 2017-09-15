@@ -389,7 +389,7 @@ namespace TerrariaRupeeReplacer {
 			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to patch the current Terraria executable?", "Patch Terraria", MessageBoxButton.YesNo);
 			if (result == MessageBoxResult.No)
 				return;
-			if (!CheckSupportedVersion(Patcher.BackupPath))
+			if (!CheckSupportedVersion(Patcher.ExePath))
 				return;
 			try {
 				Patcher.Patch();
