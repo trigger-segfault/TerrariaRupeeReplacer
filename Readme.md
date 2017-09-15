@@ -43,6 +43,7 @@ Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupee
 * Changes coin movement glow color.
 * Changes coin names.
 * Changes all references to coins into rupees.
+* Recolors Coin Gun bullets.
 * Resprites the Coin Gun (optional)
 * Resprites the Lucky Coin (optional)
 * Resprites the Coin Ring (optional)
