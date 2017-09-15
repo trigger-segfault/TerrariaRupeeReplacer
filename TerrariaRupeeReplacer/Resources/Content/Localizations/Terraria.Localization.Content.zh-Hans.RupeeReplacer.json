@@ -1,0 +1,74 @@
+{
+	"Rupee": {
+		"Rupee":		"卢比",
+		"Rupees":		"{$Rupee.Rupee}",
+		"rupee":		"{$Rupee.Rupee}",
+		"rupees":		"{$Rupee.Rupee}",
+		
+		"CopperRupee":		"{$Rupee.Copper}{$Rupee.Rupee}",
+		"SilverRupee":		"{$Rupee.Silver}{$Rupee.Rupee}",
+		"GoldRupee":		"{$Rupee.Gold}{$Rupee.Rupee}",
+		"PlatinumRupee":	"{$Rupee.Platinum}{$Rupee.Rupee}"
+	},
+	"RupeeColors": {
+		"Green":	"绿色",
+		"Blue":		"蓝色",
+		"Yellow":	"黄色",
+		"Red":		"红",
+		"Purple":	"紫色",
+		"Orange":	"橙子",
+		"Silver":	"银",
+		"Gold":		"金",
+		
+		"green":	"{$RupeeColors.Green}",
+		"blue":		"{$RupeeColors.Blue}",
+		"yellow":	"{$RupeeColors.Yellow}",
+		"red":		"{$RupeeColors.Red}",
+		"purple":	"{$RupeeColors.Purple}",
+		"orange":	"{$RupeeColors.Orange}",
+		"silver":	"{$RupeeColors.Silver}",
+		"gold":		"{$RupeeColors.Gold}"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"幸运{$Rupee.Rupee}",
+		"CoinGun":		"{$Rupee.Rupee}枪",
+		"CoinRing":		"{$Rupee.Rupee}戒指"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"击中敌人有时会掉落额外的{$Rupee.Rupee}",
+		"CoinGun":		"将钱{$Rupee.Rupee}用作弹药\n钱{$Rupee.Rupee}价值更高，伤害越大",
+		"CoinRing": 	"扩大{$Rupee.Rupee}拾取范围\n击中敌人有时会掉落额外的{$Rupee.Rupee}",
+		"GoldRing":		"扩大{$Rupee.Rupee}拾取范围",
+		"GreedyRing":	"扩大{$Rupee.Rupee}拾取范围，降低商店的商品价格\n击中敌人有时会掉落额外的钱{$Rupee.Rupee}"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"钱{$Rupee.Rupee}传送门",
+		
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	},
+	"LegacyDialog": {
+		"148":	"想让我从你耳朵后面变出一个{$Rupee.rupee}吗？不想？好吧。",
+		"195":	"如果想让商人搬进来，你需要收集很多钱。50{$Rupee.silver}{$Rupee.rupees}就能搞定！",
+		"381":	"给你，再次拿走我所有的{$Rupee.rupees}！抓好，赶紧从我视野里消失！",
+		"391":	"哦，你就把我当作{$Rupee.rupee}符号，啊？因为每次你一看到我就问我要钱。",
+		"393":	"呸！你又来了？你刚刚才拿走了我的{$Rupee.rupees}，给我滚开，晚点再回来！"
+	},
+	
+	"AnglerQuestText": {
+		"Quest_TropicalBarracuda": "食人鱼和鲨鱼都很丑！太...丑了！你知道吗？有一种鱼长得很漂亮，但可以把你的脸咬掉。我会付2块{$Rupee.platinum}{$Rupee.rupees}金来看这场表演，顺便...不过关键是，你要抓一条给我。一定要在你的脸被咬掉之前，把它交给我！\n\n（抓捕位置：丛林地表）"
+	}
+}

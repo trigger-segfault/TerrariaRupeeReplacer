@@ -94,5 +94,53 @@ namespace TerrariaRupeeReplacer.Properties {
                 this["IsTMod"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CoinGun {
+            get {
+                return ((bool)(this["CoinGun"]));
+            }
+            set {
+                this["CoinGun"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool LuckyCoin {
+            get {
+                return ((bool)(this["LuckyCoin"]));
+            }
+            set {
+                this["LuckyCoin"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CoinRing {
+            get {
+                return ((bool)(this["CoinRing"]));
+            }
+            set {
+                this["CoinRing"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CoinPortal {
+            get {
+                return ((bool)(this["CoinPortal"]));
+            }
+            set {
+                this["CoinPortal"] = value;
+            }
+        }
     }
 }

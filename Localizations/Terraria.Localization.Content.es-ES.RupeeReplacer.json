@@ -1,0 +1,62 @@
+{
+	"Rupee": {
+		"Rupee":		"Rupia",
+		"Rupees":		"Rupias",
+		"rupee":		"rupia",
+		"rupees":		"rupias",
+		
+		"CopperRupee":		"{$Rupee.Rupee} {$Rupee.copper}",
+		"SilverRupee":		"{$Rupee.Rupee} {$Rupee.silver}",
+		"GoldRupee":		"{$Rupee.Rupee} {$Rupee.gold}",
+		"PlatinumRupee":	"{$Rupee.Rupee} {$Rupee.platinum}"
+	},
+	"RupeeColors": {
+		"Green":	"Verde",
+		"Blue":		"Azul",
+		"Yellow":	"Amarilla",
+		"Red":		"Roja",
+		"Purple":	"Púrpura",
+		"Orange":	"Naranja",
+		"Silver":	"Plata",
+		"Gold":		"Oro",
+		
+		"green":	"verde",
+		"blue":		"azul",
+		"yellow":	"amarilla",
+		"red":		"roja",
+		"purple":	"púrpura",
+		"orange":	"naranja",
+		"silver":	"plata",
+		"gold":		"oro"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"{$Rupee.Rupee} de la suerte",
+		"CoinGun":		"Pistola de {$Rupee.rupee}",
+		"CoinRing":		"Anillo {$Rupee.rupee}"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"En ocasiones, golpear a los enemigos te dará {$Rupee.rupees} extra",
+		"CoinGun":		"Usa {$Rupee.rupees} como munición\nLas {$Rupee.rupees} de mayor valor infligen más daño",
+		"CoinRing": 	"Aumenta el alcance de recolección de {$Rupee.rupees}\nEn ocasiones, golpear a los enemigos te dará {$Rupee.rupees} extra",
+		"GoldRing":		"Aumenta el alcance de recolección de {$Rupee.rupees}",
+		"GreedyRing":	"Aumenta el alcance de la recolección de {$Rupee.rupees} y las tiendas tienen precios más bajos\nEn ocasiones, golpear a los enemigos te dará {$Rupee.rupees} extra"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"Portal de {$Rupee.rupees}",
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	}
+}

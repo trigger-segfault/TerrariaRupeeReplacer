@@ -1,0 +1,77 @@
+{
+	"Rupee": {
+		"Rupee":		"Rupia",
+		"Rupees":		"Rupias",
+		"rupee":		"rupia",
+		"rupees":		"rupias",
+		
+		"CopperRupee":		"{$Rupee.Rupee} {$Rupee.Copper}",
+		"SilverRupee":		"{$Rupee.Rupee} {$Rupee.Silver}",
+		"GoldRupee":		"{$Rupee.Rupee} {$Rupee.Gold}",
+		"PlatinumRupee":	"{$Rupee.Rupee} {$Rupee.Platinum}"
+	},
+	"RupeeColors": {
+		"Green":	"Verde",
+		"Blue":		"Azul",
+		"Yellow":	"Amarela",
+		"Red":		"Vermelha",
+		"Purple":	"Roxa",
+		"Orange":	"Laranja",
+		"Silver":	"Prata",
+		"Gold":		"Ouro",
+		
+		"green":	"verde",
+		"blue":		"azul",
+		"yellow":	"amarela",
+		"red":		"vermelha",
+		"purple":	"roxa",
+		"orange":	"laranja",
+		"silver":	"prata",
+		"gold":		"ouro"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"{$Rupee.Rupee} da Sorte",
+		"CoinGun":		"Pistola de {$Rupee.Rupee}",
+		"CoinRing":		"Anel de {$Rupee.Rupee}"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"Acertar inimigos às vezes faz com que deixem cair mais {$Rupee.rupees}",
+		"CoinGun":		"Utiliza {$Rupee.rupees} como munição\n{$Rupee.Rupees} de valor mais alto causam danos maiores",
+		"CoinRing": 	"Maior alcance da coleta de {$Rupee.rupees}\nAcertar inimigos às vezes faz com que deixem cair mais {$Rupee.rupees}",
+		"GoldRing":		"Maior alcance da coleta de {$Rupee.rupees}",
+		"GreedyRing":	"Aumenta a coleta de {$Rupee.rupees} e diminui os preços nas lojas\nAcertar inimigos às vezes faz com que deixem cair mais {$Rupee.rupees}"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"Portal de {$Rupee.Rupees}",
+		
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	},
+	"LegacyDialog": {
+		"148":	"Quer que eu tire uma {$Rupee.rupee} da sua orelha? Não? Ok.",
+		"195":	"Se você quiser que um comerciante venha morar aqui, terá que juntar bastante dinheiro. 50 {$Rupee.rupees} {$Rupee.silver} devem ser o suficiente!",
+		"381":	"Você de novo, para levar todas as minhas {$Rupee.rupees}! Só peque e dê o fora daqui!",
+		"391":	"Ah, você acha que eu sou uma fábrica de {$Rupee.rupees}? Porque toda vez que você me vê, pergunta a mesma coisa.",
+		"393":	"Bah! Você outra vez? Você acabou de pegar algumas das minhas {$Rupee.rupees}, dê o fora e só volte mais tarde!"
+	},
+	
+	"AnglerQuestText": {
+		"Quest_TropicalBarracuda": "Piranhas e tubarões são feios! Tãaaao feio! Você sabia que existe um peixe que, além de ser bonito, é capaz de arrancar o seu rosto? Eu pagaria 2 {$Rupee.rupees} {$Rupee.platinum} para ver isso acontecer... Mas voltando ao assunto, você vai pegar um para mim. Só traga ele antes que devore seu rosto!\n\n(Capturado na Superfície da Selva)"
+	},
+	"DyeTraderSpecialText": {
+		"NoPlant_2": "Estas garrafas de tinta? Desculpe, colega, por elas, não aceito {$Rupee.rupees}. Eu só aceito as plantas mais preciosas em troca por elas!"
+	}
+}

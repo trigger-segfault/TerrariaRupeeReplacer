@@ -1,0 +1,72 @@
+{
+	"RupeeReplacer": {
+		"Rupee":		"Rubis",
+		"Rupees":		"Rubis",
+		"rupee":		"rubis",
+		"rupees":		"rubis",
+		
+		"CopperRupee":		"{$Rupee.Rupee} {$Rupee.copper}",
+		"SilverRupee":		"{$Rupee.Rupee} {$Rupee.silver}",
+		"GoldRupee":		"{$Rupee.Rupee} {$Rupee.gold}",
+		"PlatinumRupee":	"{$Rupee.Rupee} {$Rupee.platinum}"
+	},
+	"RupeeColors": {
+		"Green":	"Vert",
+		"Blue":		"Bleu",
+		"Yellow":	"Jaune",
+		"Red":		"Rouge",
+		"Purple":	"Violet",
+		"Orange":	"D'orange",
+		"Silver":	"D'argent",
+		"Gold":		"D'or",
+		
+		"green":	"vert",
+		"blue":		"bleu",
+		"yellow":	"jaune",
+		"red":		"rouge",
+		"purple":	"violet",
+		"orange":	"d'orange",
+		"silver":	"d'argent",
+		"gold":		"d'or"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"{$Rupee.Rupee} porte-bonheur",
+		"CoinGun":		"Fusil à {$Rupee.rupees}",
+		"CoinRing":		"Anneau à {$Rupee.rupees}"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"Frapper des ennemis rapporte parfois des {$Rupee.rupees} en plus",
+		"CoinGun":		"Les munitions sont des {$Rupee.rupees}\nLes {$Rupee.rupees} de valeur plus élevée font plus de dégâts",
+		"CoinRing": 	"Augmente la portée de récolte de {$Rupee.rupees}\nFrapper les ennemis peut parfois rapporter des  {$Rupee.rupees}",
+		"GoldRing":		"Augmente la portée de récolte de {$Rupee.rupees}",
+		"GreedyRing":	"Augmente la portée de récolte de {$Rupee.rupees} et les boutiques font des réductions\nFrapper les ennemis peut parfois rapporter des {$Rupee.rupees}"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"Portail de {$Rupee.rupees}",
+		
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	},
+	"LegacyDialog": {
+		"148":	"Veux-tu que je trouve une {$Rupee.rupee} derrière ton oreille ? Non ? D'accord.",
+		"192": "Pour qu'une pièce soit considérée comme une maison, il lui faut une porte, une chaise, une table et une source de lumière. Il faut également qu'il y ait des murs.",
+		"195":	"Si tu souhaites qu'un marchand emménage, tu dois récolter beaucoup d'argent. 50 {$Rupee.rupees} {$Rupee.silver} devraient faire l'affaire !"
+	},
+	
+	"AnglerQuestText": {
+		"Quest_TropicalBarracuda": "Les piranhas et les requins sont moches ! Trop moches ! Sais-tu qu'il existe un très joli poisson ? Enfin, il peut quand même te croquer la tête. Je donnerai deux {$Rupee.rupees} {$Rupee.platinum} pour voir ça, d'ailleurs... Bref, j'aimerais que tu m'en attrapes un. Mais avant qu'il te croque la tête !\n\n(Se trouve à la surface de la jungle)"
+	}
+}

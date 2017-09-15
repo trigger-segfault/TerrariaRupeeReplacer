@@ -1,0 +1,74 @@
+{
+	"Rupee": {
+		"Rupee":		"Rupia",
+		"Rupees":		"Rupie",
+		"rupee":		"rupia",
+		"rupees":		"rupie",
+		
+		"CopperRupee":		"{$Rupee.Copper} {$Rupee.Rupee}",
+		"SilverRupee":		"{$Rupee.Silver} {$Rupee.Rupee}",
+		"GoldRupee":		"{$Rupee.Gold} {$Rupee.Rupee}",
+		"PlatinumRupee":	"{$Rupee.Platinum} {$Rupee.Rupee}"
+	},
+	"RupeeColors": {
+		"Green":	"Zielona",
+		"Blue":		"Niebieska",
+		"Yellow":	"Żółta",
+		"Red":		"Czerwona",
+		"Purple":	"Purpurowa",
+		"Orange":	"Pomarańczowa",
+		"Silver":	"Srebrna",
+		"Gold":		"Złota",
+		
+		"green":	"zielona",
+		"blue":		"niebieska",
+		"yellow":	"żółta",
+		"red":		"czerwona",
+		"purple":	"purpurowa",
+		"orange":	"pomarańczowa",
+		"silver":	"srebrna",
+		"gold":		"złota"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"Szczęśliwa {$Rupee.rupee}",
+		"CoinGun":		"Pistolet {$Rupee.rupee}",
+		"CoinRing":		"Pierścień {$Rupee.rupee}"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"Atakowanie przeciwników czasami daje dodatkowe {$Rupee.rupees}",
+		"CoinGun":		"Używa {$Rupee.rupees} jako amunicji\n{$Rupee.Rupees} o wyższej wartości zadają większe obrażenia",
+		"CoinRing": 	"Zwiększa zasięg podnoszenia {$Rupee.rupees}\nAtakowanie przeciwników czasami daje dodatkowe {$Rupee.rupees}",
+		"GoldRing":		"Zwiększa zasięg podnoszenia {$Rupee.rupees}",
+		"GreedyRing":	"Zwiększa zasięg podnoszenia {$Rupee.rupees} i obniża ceny towarów w sklepach\nAtakowanie przeciwników czasami daje dodatkowe {$Rupee.rupees}"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"Portal {$Rupee.rupee}",
+		
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	},
+	"LegacyDialog": {
+		"148":	"Wyciągnąć ci zza ucha {$Rupee.rupee}? Nie? Dobra.",
+		"195":	"Jeśli chcesz, żeby kupiec się wprowadził, będziesz potrzebować dużo pieniędzy. 50 {$Rupee.silver} {$Rupee.rupees} powinno wystarczyć!",
+		"381":	"Here you are again, taking all my {$Rupee.rupees}! Just grab it and begone from my sight!",
+		"391":	"Oh, so you just see me as a {$Rupee.rupee} sign, eh? 'Cus every time you see me, you ask me.",
+		"393":	"Bah! You again? You just grabbed some of my {$Rupee.rupees} just moments ago, so bugger off and come back later!"
+	},
+	
+	"AnglerQuestText": {
+		"Quest_TropicalBarracuda": "Piranie i rekiny są paskudne! Ogromnie paskudne! Wiesz, że istnieje bardzo ładna ryba, która i tak może odgryźć ci to i owo? Dałbym 2 {$Rupee.platinum} {$Rupee.rupees}, żeby to zobaczyć, tak nawiasem mówiąc... Do rzeczy, masz mi taką złapać. Tylko oddaj ją, zanim ci coś odgryzie!\n\n(można złapać w Dżungli na Powierzchni)"
+	}
+}

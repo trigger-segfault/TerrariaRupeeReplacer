@@ -1,0 +1,62 @@
+{
+	"Rupee": {
+		"Rupee":		"卢比",
+		"Rupees":		"{$Rupee.Rupee}",
+		"rupee":		"{$Rupee.Rupee}",
+		"rupees":		"{$Rupee.Rupee}",
+		
+		"CopperRupee":		"{$Rupee.Copper}{$Rupee.Rupee}",
+		"SilverRupee":		"{$Rupee.Silver}{$Rupee.Rupee}",
+		"GoldRupee":		"{$Rupee.Gold}{$Rupee.Rupee}",
+		"PlatinumRupee":	"{$Rupee.Platinum}{$Rupee.Rupee}"
+	},
+	"RupeeColors": {
+		"Green":	"绿色",
+		"Blue":		"蓝色",
+		"Yellow":	"黄色",
+		"Red":		"红",
+		"Purple":	"紫色",
+		"Orange":	"橙子",
+		"Silver":	"银",
+		"Gold":		"金",
+		
+		"green":	"{$RupeeColors.Green}",
+		"blue":		"{$RupeeColors.Blue}",
+		"yellow":	"{$RupeeColors.Yellow}",
+		"red":		"{$RupeeColors.Red}",
+		"purple":	"{$RupeeColors.Purple}",
+		"orange":	"{$RupeeColors.Orange}",
+		"silver":	"{$RupeeColors.Silver}",
+		"gold":		"{$RupeeColors.Gold}"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"幸运{$Rupee.Rupee}",
+		"CoinGun":		"{$Rupee.Rupee}枪",
+		"CoinRing":		"{$Rupee.Rupee}戒指"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"击中敌人有时会掉落额外的钱{$Rupee.Rupee}",
+		"CoinGun":		"将钱{$Rupee.Rupee}用作弹药\n钱{$Rupee.Rupee}价值更高，伤害越大",
+		"CoinRing": 	"扩大钱{$Rupee.Rupee}拾取范围\n击中敌人有时会掉落额外的钱{$Rupee.Rupee}",
+		"GoldRing":		"扩大钱{$Rupee.Rupee}拾取范围",
+		"GreedyRing":	"扩大钱{$Rupee.Rupee}拾取范围，降低商店的商品价格\n击中敌人有时会掉落额外的钱{$Rupee.Rupee}"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"钱{$Rupee.Rupee}传送门",
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	}
+}

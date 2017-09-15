@@ -1,0 +1,73 @@
+{
+	"Rupee": {
+		"Rupee":		"Rupia",
+		"Rupees":		"Rupias",
+		"rupee":		"rupia",
+		"rupees":		"rupias",
+		
+		"CopperRupee":		"{$Rupee.Rupee} {$Rupee.copper}",
+		"SilverRupee":		"{$Rupee.Rupee} {$Rupee.silver}",
+		"GoldRupee":		"{$Rupee.Rupee} {$Rupee.gold}",
+		"PlatinumRupee":	"{$Rupee.Rupee} {$Rupee.platinum}"
+	},
+	"RupeeColors": {
+		"Green":	"Verde",
+		"Blue":		"Azul",
+		"Yellow":	"Amarilla",
+		"Red":		"Roja",
+		"Purple":	"Púrpura",
+		"Orange":	"Naranja",
+		"Silver":	"Plata",
+		"Gold":		"Oro",
+		
+		"green":	"verde",
+		"blue":		"azul",
+		"yellow":	"amarilla",
+		"red":		"roja",
+		"purple":	"púrpura",
+		"orange":	"naranja",
+		"silver":	"plata",
+		"gold":		"oro"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"{$Rupee.Rupee} de la suerte",
+		"CoinGun":		"Pistola de {$Rupee.rupee}",
+		"CoinRing":		"Anillo {$Rupee.rupee}"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"En ocasiones, golpear a los enemigos te dará {$Rupee.rupees} extra",
+		"CoinGun":		"Usa {$Rupee.rupees} como munición\nLas {$Rupee.rupees} de mayor valor infligen más daño",
+		"CoinRing": 	"Aumenta el alcance de recolección de {$Rupee.rupees}\nEn ocasiones, golpear a los enemigos te dará {$Rupee.rupees} extra",
+		"GoldRing":		"Aumenta el alcance de recolección de {$Rupee.rupees}",
+		"GreedyRing":	"Aumenta el alcance de la recolección de {$Rupee.rupees} y las tiendas tienen precios más bajos\nEn ocasiones, golpear a los enemigos te dará {$Rupee.rupees} extra"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"Portal de {$Rupee.rupees}",
+		
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	},
+	"LegacyDialog": {
+		"148":	"¿Quieres que saque una {$Rupee.rupees} de tu oreja? ¿No? Pues nada.",
+		"195":	"Si quieres que un mercader se mude a una casa, deberás recoger una gran cantidad de dinero. ¡Bastará con 50 {$Rupee.rupees} {$Rupee.silver}!",
+		"383": "Esto es todo lo que tendrás por ahora. ¡Ni una {$Rupee.rupee} más! Cógelo y gástalo con cabeza.",
+		"396": "Acabas de recibir tu pago. ¡No te llevarás ni una {$Rupee.rupee} más! ¡Sal de aquí!"
+	},
+	
+	"AnglerQuestText": {
+		"Quest_TropicalBarracuda": "¡Las pirañas y los tiburones son horribles! ¡Muy, muy feos! ¿Sabías que hay un pez que parece muy bonito y que podría comerte la cara? Pagaría 2 {$Rupee.rupees} {$Rupee.platinum} por verlo, la verdad… Bueno, vayamos al grano: quiero que me lo consigas. ¡Tráemelo antes de que te coma la cara!\n\n(Se encuentra en la superficie de la selva)"
+	}
+}

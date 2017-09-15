@@ -1,0 +1,73 @@
+{
+	"RupeeReplacer": {
+		"Rupee":		"Pупия",
+		"Rupees":		"Pупии",
+		"rupee":		"pупия",
+		"rupees":		"pупии",
+		
+		"CopperRupee":		"{$Rupee.Copper} {$Rupee.rupee}",
+		"SilverRupee":		"{$Rupee.Silver} {$Rupee.rupee}",
+		"GoldRupee":		"{$Rupee.Gold} {$Rupee.rupee}",
+		"PlatinumRupee":	"{$Rupee.Platinum} {$Rupee.rupee}"
+	},
+	"RupeeColors": {
+		"Green":	"Зеленая",
+		"Blue":		"Голубая",
+		"Yellow":	"Желтая",
+		"Red":		"Красная",
+		"Purple":	"Фиолетовая",
+		"Orange":	"Оранжевая",
+		"Silver":	"Серебряная",
+		"Gold":		"Золотая",
+		
+		"green":	"зеленая",
+		"blue":		"голубая",
+		"yellow":	"желтая",
+		"red":		"красная",
+		"purple":	"фиолетовая",
+		"orange":	"оранжевая",
+		"silver":	"Cеребряная",
+		"gold":		"золотая"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"Счастливая {$Rupee.rupee}",
+		"CoinGun":		"Pупинский пистолет",
+		"CoinRing":		"Кольцо {$Rupee.rupees}"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"При ударе врагов иногда падают дополнительные {$Rupee.rupees}",
+		"CoinGun":		"Использует {$Rupee.rupees} в качестве оружия\nБолее ценные {$Rupee.rupees} наносят больше урона",
+		"CoinRing": 	"Увеличивает дистанцию сбора {$Rupee.rupees}\nПри ударе врагов иногда падают дополнительные {$Rupee.rupees}",
+		"GoldRing":		"Увеличивает дистанцию сбора {$Rupee.rupees}",
+		"GreedyRing":	"Увеличивает дистанцию сбора {$Rupee.rupees} и снижает цены в магазинах\nПри ударе врагов иногда падают дополнительные {$Rupee.rupees}"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"{$Rupee.Rupee} портал",
+		
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	},
+	"LegacyDialog": {
+		"148":	"Может, мне достать {$Rupee.rupee} из-за уха? Нет? Ладно.",
+		"195":	"Чтобы в городе поселился торговец, нужно много денег. 50 {$Rupee.silver} {$Rupee.rupees} будет достаточно!",
+		"381":	"Ты снова заберешь у меня все {$Rupee.rupees}? Просто бери их и убирайся с глаз моих!",
+		"391":	"Блин! Снова ты? Последний раз я давал тебе {$Rupee.rupee} всего минуту назад, так что убирайся и приходи позже!"
+	},
+	
+	"AnglerQuestText": {
+		"Quest_TropicalBarracuda": "Пираньи и акулы — это такие уродливые существа! Ну ооочень уродливые! Ты знал, что даже если рыба выглядит очень красиво, она все равно может обглодать тебе лицо? Кстати, за такое зрелище я бы заплатил 2 {$Rupee.platinum} {$Rupee.rupees}… Ладно, перейдем к делу — ты поймаешь мне эту рыбу. Только постарайся это сделать до того, как лишишься своего лица!\n\n(Поймано в джунглях на поверхности)"
+	}
+}

@@ -19,9 +19,11 @@ namespace TerrariaRupeeReplacer.Patching {
 		/**<summary>The available rupee image types to replace.</summary>*/
 		public enum ImageTypes {
 			Animation,
+			Bullet,
 			Dust,
 			Falling,
 			Item,
+			Portal,
 			Tile
 		}
 
@@ -31,33 +33,47 @@ namespace TerrariaRupeeReplacer.Patching {
 
 		/**<summary>The list of content files needed to be backed up.</summary>*/
 		public static readonly string[] FilesToBackup = {
-			"Images/Coin_0.xnb",
-			"Images/Coin_1.xnb",
-			"Images/Coin_2.xnb",
-			"Images/Coin_3.xnb",
+			"Images/Coin_0.xnb", // Copper Coin Animation
+			"Images/Coin_1.xnb", // Silver Coin Animation
+			"Images/Coin_2.xnb", // Gold Coin Animation
+			"Images/Coin_3.xnb", // Platinum Coin Animation
 
-			"Images/Dust.xnb",
+			"Images/Dust.xnb", // All dust particles
 
-			"Images/Item_71.xnb",
-			"Images/Item_72.xnb",
-			"Images/Item_73.xnb",
-			"Images/Item_74.xnb",
+			"Images/Item_71.xnb", // Copper Coin
+			"Images/Item_72.xnb", // Silver Coin
+			"Images/Item_73.xnb", // Gold Coin
+			"Images/Item_74.xnb", // Platinum Coin
 
-			"Images/Projectile_411.xnb",
-			"Images/Projectile_412.xnb",
-			"Images/Projectile_413.xnb",
-			"Images/Projectile_414.xnb",
+			"Images/Item_855.xnb", // Lucky Coin
+			"Images/Item_905.xnb", // Coin Gun
+			"Images/Item_3034.xnb", // Coin Ring
 
-			"Images/Tiles_330.xnb",
-			"Images/Tiles_331.xnb",
-			"Images/Tiles_332.xnb",
-			"Images/Tiles_333.xnb",
+			"Images/Projectile_158.xnb", // Copper Coin Bullet
+			"Images/Projectile_159.xnb", // Silver Coin Bullet
+			"Images/Projectile_160.xnb", // Gold Coin Bullet
+			"Images/Projectile_161.xnb", // Platinum Coin Bullet
 
+			"Images/Projectile_411.xnb", // Falling Copper Coins
+			"Images/Projectile_412.xnb", // Falling Silver Coins
+			"Images/Projectile_413.xnb", // Falling Gold Coins
+			"Images/Projectile_414.xnb", // Falling Platinum Coins
+
+			"Images/Projectile_518.xnb", // Coin Portal
+
+			"Images/Tiles_330.xnb", // Placed Copper Coins
+			"Images/Tiles_331.xnb", // Placed Silver Coins
+			"Images/Tiles_332.xnb", // Placed Gold Coins
+			"Images/Tiles_333.xnb", // Placed Platinum Coins
+
+			// Coin Pickup
 			"Sounds/Coin_0.xnb",
 			"Sounds/Coin_1.xnb",
 			"Sounds/Coin_2.xnb",
 			"Sounds/Coin_3.xnb",
 			"Sounds/Coin_4.xnb",
+
+			// Place Coins
 			"Sounds/Coins.xnb",
 		};
 
@@ -89,7 +105,7 @@ namespace TerrariaRupeeReplacer.Patching {
 
 		#endregion
 		//--------------------------------
-		#region Rupee Colors
+		#region Rupee Settings
 
 		/**<summary>The copper coin rupee color.</summary>*/
 		public static RupeeColors Copper { get; set; } = RupeeColors.Green;
@@ -99,6 +115,15 @@ namespace TerrariaRupeeReplacer.Patching {
 		public static RupeeColors Gold { get; set; } = RupeeColors.Red;
 		/**<summary>The platinum coin rupee color.</summary>*/
 		public static RupeeColors Platinum { get; set; } = RupeeColors.Purple;
+
+		/**<summary>True if the Coin Gun is reprited.</summary>*/
+		public static bool CoinGun { get; set; } = true;
+		/**<summary>True if the Lucky Coin is reprited and renamed.</summary>*/
+		public static bool LuckyCoin { get; set; } = true;
+		/**<summary>True if the Coin Ring is reprited.</summary>*/
+		public static bool CoinRing { get; set; } = true;
+		/**<summary>True if the Coin Portal is reprited.</summary>*/
+		public static bool CoinPortal { get; set; } = true;
 
 		#endregion
 		//--------------------------------
@@ -164,36 +189,56 @@ namespace TerrariaRupeeReplacer.Patching {
 		public static void Replace() {
 			BackupContent();
 
+			Restore();
+
 			// Replace normal images
+			// Coin Animations
 			ReplaceImage(ImageTypes.Animation, Copper, "Coin_0.xnb");
 			ReplaceImage(ImageTypes.Animation, Silver, "Coin_1.xnb");
 			ReplaceImage(ImageTypes.Animation, Gold, "Coin_2.xnb");
 			ReplaceImage(ImageTypes.Animation, Platinum, "Coin_3.xnb");
 
+			// Coin Sprites
 			ReplaceImage(ImageTypes.Item, Copper, "Item_71.xnb");
 			ReplaceImage(ImageTypes.Item, Silver, "Item_72.xnb");
 			ReplaceImage(ImageTypes.Item, Gold, "Item_73.xnb");
 			ReplaceImage(ImageTypes.Item, Platinum, "Item_74.xnb");
 
+			// Coin Gun Bullets
+			ReplaceImage(ImageTypes.Bullet, Copper, "Projectile_158.xnb");
+			ReplaceImage(ImageTypes.Bullet, Silver, "Projectile_159.xnb");
+			ReplaceImage(ImageTypes.Bullet, Gold, "Projectile_160.xnb");
+			ReplaceImage(ImageTypes.Bullet, Platinum, "Projectile_161.xnb");
+
+			// Falling Coins
 			ReplaceImage(ImageTypes.Falling, Copper, "Projectile_411.xnb");
 			ReplaceImage(ImageTypes.Falling, Silver, "Projectile_412.xnb");
 			ReplaceImage(ImageTypes.Falling, Gold, "Projectile_413.xnb");
 			ReplaceImage(ImageTypes.Falling, Platinum, "Projectile_414.xnb");
 
+			// Coin Piles
 			ReplaceImage(ImageTypes.Tile, Copper, "Tiles_330.xnb");
 			ReplaceImage(ImageTypes.Tile, Silver, "Tiles_331.xnb");
 			ReplaceImage(ImageTypes.Tile, Gold, "Tiles_332.xnb");
 			ReplaceImage(ImageTypes.Tile, Platinum, "Tiles_333.xnb");
 
-			// Replace dust particles
+			// Conditional
+			if (CoinGun)	ReplaceImage("RupeeGun", "Item_905.xnb");
+			if (LuckyCoin)	ReplaceImage("LuckyRupee", "Item_855.xnb");
+			if (CoinRing)	ReplaceImage("RupeeRing", "Item_3034.xnb");
+			if (CoinPortal)	ReplaceImage(ImageTypes.Portal, Gold, "Projectile_518.xnb");
+
+			// Dust Particles
 			ReplaceDust();
 
-			// Replace sounds
+			// Coin Pickup
 			ReplaceSound("Collect1", "Coin_0.xnb");
 			ReplaceSound("Collect1", "Coin_1.xnb");
 			ReplaceSound("Collect1", "Coin_2.xnb");
 			ReplaceSound("Collect2", "Coin_3.xnb");
 			ReplaceSound("Collect2", "Coin_4.xnb");
+
+			// Coin Pile Place
 			ReplaceSound("Place", "Coins.xnb");
 		}
 		/**<summary>Replaces the coin textures in the dust texture.</summary>*/
@@ -230,12 +275,21 @@ namespace TerrariaRupeeReplacer.Patching {
 		#region Helpers
 
 		/**<summary>Replaces an image content file.</summary>*/
+		private static void ReplaceImage(string name, string outputFile) {
+			PngConverter.Convert(GetImage(name), Path.Combine(ImageDir, outputFile));
+		}
+		/**<summary>Replaces an image content file.</summary>*/
 		private static void ReplaceImage(ImageTypes type, RupeeColors color, string outputFile) {
 			PngConverter.Convert(GetImage(type, color), Path.Combine(ImageDir, outputFile));
 		}
 		/**<summary>Replaces a sound content file.</summary>*/
 		private static void ReplaceSound(string name, string outputFile) {
 			WavConverter.Convert(GetSound(name), Path.Combine(SoundDir, outputFile));
+		}
+		/**<summary>Gets an image resource.</summary>*/
+		private static Bitmap GetImage(string name) {
+			ResourceManager rm = new ResourceManager("TerrariaRupeeReplacer.Properties.Resources", typeof(Resources).Assembly);
+			return (Bitmap)rm.GetObject(name);
 		}
 		/**<summary>Gets an image resource.</summary>*/
 		private static Bitmap GetImage(ImageTypes type, RupeeColors color) {

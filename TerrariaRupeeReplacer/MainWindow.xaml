@@ -4,9 +4,26 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Terraria Rupee Replacer" Height="368" Width="480" ResizeMode="CanMinimize" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="App.ico" Closing="OnClosing">
+        Title="Terraria Rupee Replacer" Height="442" Width="480" ResizeMode="CanMinimize" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="App.ico" Closing="OnClosing">
     <Window.Resources>
         <FontFamily x:Key="Andy">pack://application:,,,/Resources/#Andy</FontFamily>
+        <Style x:Key="DisablableImage" TargetType="{x:Type Image}">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key="DisablableRectangle" TargetType="{x:Type Rectangle}">
+            <Style.Triggers>
+                <Trigger Property="IsEnabled" Value="True">
+                    <Setter Property="Opacity" Value="0.9" />
+                </Trigger>
+                <Trigger Property="IsEnabled" Value="False">
+                    <Setter Property="Opacity" Value="0.5" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <DockPanel LastChildFill="True" Margin="0">
         <Menu DockPanel.Dock="Top" x:Name="menu" BorderThickness="0,0,0,1" BorderBrush="#FF919395">
@@ -84,7 +101,7 @@
                             <GradientStop Color="#FF168B3B" Offset="1"/>
                         </LinearGradientBrush>
                     </Button.Background>
-                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Update&#xD;&#xA;Rupees" IsHitTestVisible="False"/>
+                    <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Update&#xD;&#xA;Content" IsHitTestVisible="False"/>
                 </Button>
                 <Button x:Name="buttonRestore" Content="Restore" HorizontalAlignment="Center" Margin="5,0,0,0" VerticalAlignment="Bottom" Width="90" Click="OnRestore" Height="60" FontSize="22" FontWeight="Bold" Foreground="White" Focusable="False" IsTabStop="False" ToolTip="Restore executable from backup" FontFamily="{StaticResource Andy}" BorderBrush="#FF1B8040">
                     <Button.Background>
@@ -108,10 +125,10 @@
                     <Label HorizontalAlignment="Left" VerticalAlignment="Top" Content="Executable:" Margin="10,7,0,0"/>
                     <RadioButton x:Name="radioButtonVanilla" HorizontalAlignment="Left" VerticalAlignment="Top" Content="Vanilla" Margin="89,12,0,0" Click="OnVanillaSelected" IsChecked="True" GroupName="ExecutableType"/>
                     <RadioButton x:Name="radioButtonTMod" HorizontalAlignment="Left" VerticalAlignment="Top" Content="tModLoader" Margin="150,12,0,0" Click="OnTModSelected" GroupName="ExecutableType"/>
-                    
+
                     <Separator VerticalAlignment="Top" Margin="10,39,10,0"/>
-                    
-                    <Grid Margin="0,52,0,0" HorizontalAlignment="Center" VerticalAlignment="Top">
+
+                    <Grid Margin="20,52,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="141">
                         <Grid HorizontalAlignment="Left" Height="30" Margin="0,0,0,0" VerticalAlignment="Top"  Width="80">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="20"/>
@@ -130,7 +147,7 @@
                             <Label Content="Silver" Grid.Column="1" VerticalContentAlignment="Center" />
                         </Grid>
                         <ComboBox x:Name="comboBoxSilver" HorizontalAlignment="Left" Margin="80,37,0,0" VerticalAlignment="Top" Width="110" Height="30" VerticalContentAlignment="Center" SelectionChanged="OnSilverCoinChanged"/>
-                        <Grid HorizontalAlignment="Left" Height="30" Margin="205,0,0,0" VerticalAlignment="Top" Width="80">
+                        <Grid HorizontalAlignment="Left" Height="30" Margin="0,74,0,0" VerticalAlignment="Top" Width="80">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="20"/>
                                 <ColumnDefinition/>
@@ -138,8 +155,8 @@
                             <Image Source="/Resources/GoldCoin.png" Width="12" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             <Label Content="Gold" Grid.Column="1" VerticalContentAlignment="Center" />
                         </Grid>
-                        <ComboBox x:Name="comboBoxGold" HorizontalAlignment="Left" Margin="285,0,0,0" VerticalAlignment="Top" Width="110" Height="30" VerticalContentAlignment="Center" SelectionChanged="OnGoldCoinChanged"/>
-                        <Grid HorizontalAlignment="Left" Height="30" Margin="205,37,0,0" VerticalAlignment="Top" Width="80">
+                        <ComboBox x:Name="comboBoxGold" HorizontalAlignment="Left" Margin="80,74,0,0" VerticalAlignment="Top" Width="110" Height="30" VerticalContentAlignment="Center" SelectionChanged="OnGoldCoinChanged"/>
+                        <Grid HorizontalAlignment="Left" Height="30" Margin="0,111,0,0" VerticalAlignment="Top" Width="80">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="20"/>
                                 <ColumnDefinition/>
@@ -147,7 +164,35 @@
                             <Image Source="/Resources/PlatinumCoin.png" Width="14" Height="16" HorizontalAlignment="Center" VerticalAlignment="Center" />
                             <Label Content="Platinum" Grid.Column="1" VerticalContentAlignment="Center" />
                         </Grid>
-                        <ComboBox x:Name="comboBoxPlat" HorizontalAlignment="Left" Margin="285,37,0,0" VerticalAlignment="Top" Width="110" Height="30" VerticalContentAlignment="Center" SelectionChanged="OnPlatinumCoinChanged"/>
+                        <ComboBox x:Name="comboBoxPlat" HorizontalAlignment="Left" Margin="80,111,0,0" VerticalAlignment="Top" Width="110" Height="30" VerticalContentAlignment="Center" SelectionChanged="OnPlatinumCoinChanged"/>
+                    </Grid>
+                    <Separator Style="{StaticResource {x:Static ToolBar.SeparatorStyleKey}}" HorizontalAlignment="Left" Margin="227,50,0,0" VerticalAlignment="Top" Height="148" />
+                    <Grid HorizontalAlignment="Left" VerticalAlignment="Top" Margin="245,53,0,0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="34"/>
+                            <RowDefinition Height="34"/>
+                            <RowDefinition Height="34"/>
+                            <RowDefinition Height="34"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="92"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox x:Name="checkBoxRupeeGun" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Rupee Gun" Padding="4,-1,0,0" Margin="0" Click="OnRupeeGunChecked" ToolTip="Resprites the Coin Gun" IsChecked="True"/>
+                        <Image Source="Resources/Content/Images/RupeeGun.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="52" Height="18" Margin="0" IsEnabled="{Binding ElementName=checkBoxRupeeGun, Path=IsChecked}" Style="{StaticResource DisablableImage}" Grid.Column="1" />
+
+                        <CheckBox x:Name="checkBoxLuckyRupee" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Lucky Rupee" Padding="4,-1,0,0" Grid.Row="1" Click="OnLuckyRupeeChecked" ToolTip="Renames and resprites the Lucky Coin" IsChecked="True"/>
+                        <Image Source="Resources/Content/Images/LuckyRupee.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="22" Height="32" Margin="0" IsEnabled="{Binding ElementName=checkBoxLuckyRupee, Path=IsChecked}" Style="{StaticResource DisablableImage}" Grid.Column="1" Grid.Row="1" />
+
+                        <CheckBox x:Name="checkBoxRupeeRing" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Rupee Ring" Padding="4,-1,0,0" Grid.Row="2" Click="OnRupeeRingChecked" ToolTip="Resprites the Coin Ring" IsChecked="True"/>
+                        <Image Source="Resources/Content/Images/RupeeRing.png" HorizontalAlignment="Center" VerticalAlignment="Center" Width="28" Height="20" Margin="0" IsEnabled="{Binding ElementName=checkBoxRupeeRing, Path=IsChecked}" Style="{StaticResource DisablableImage}" Grid.Column="1" Grid.Row="2" />
+
+                        <CheckBox x:Name="checkBoxRupeePortal" HorizontalAlignment="Left" VerticalAlignment="Center" Content="Rupee Portal" Padding="4,-1,0,0" Grid.Row="3" Click="OnRupeePortalChecked" ToolTip="Resprites the Coin Portal" IsChecked="True"/>
+                        <Rectangle Grid.Row="3" Grid.Column="1" Width="32" Height="32" HorizontalAlignment="Center" VerticalAlignment="Center" IsEnabled="{Binding ElementName=checkBoxRupeePortal, Path=IsChecked}" Style="{StaticResource DisablableRectangle}">
+                            <Rectangle.Fill>
+                                <ImageBrush x:Name="imagePortal" ImageSource="Resources/Content/Images/RupeePortalRed.png" Stretch="None" AlignmentX="Left" AlignmentY="Top" Viewport="0,0,1,1" ViewboxUnits="Absolute" Viewbox="0,0,32,32"/>
+                            </Rectangle.Fill>
+                        </Rectangle>
                     </Grid>
                 </Grid>
             </GroupBox>

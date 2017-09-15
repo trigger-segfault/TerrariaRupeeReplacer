@@ -170,12 +170,6 @@
     <Resource Include="Resources\Icons\Empty.png" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RupeeReplacer\RupeeReplacer.csproj">
-      <Project>{e0bd6e3e-d7db-4321-b772-198e97e6d26b}</Project>
-      <Name>TerrariaItemModification</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Resources\Icons\Browse.png" />
   </ItemGroup>
   <ItemGroup>
@@ -206,76 +200,85 @@
     <Resource Include="Resources\Icons\VariableList.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Content\Localizations\Terraria.Localization.Content.de-DE.RupeeReplacer.json" />
+    <None Include="Resources\Content\Localizations\Terraria.Localization.Content.en-US.RupeeReplacer.json" />
+    <None Include="Resources\Content\Localizations\Terraria.Localization.Content.es-ES.RupeeReplacer.json" />
+    <None Include="Resources\Content\Localizations\Terraria.Localization.Content.fr-FR.RupeeReplacer.json" />
+    <None Include="Resources\Content\Localizations\Terraria.Localization.Content.it-IT.RupeeReplacer.json" />
+    <None Include="Resources\Content\Localizations\Terraria.Localization.Content.pl-PL.RupeeReplacer.json" />
+    <None Include="Resources\Content\Localizations\Terraria.Localization.Content.pt-BR.RupeeReplacer.json" />
+    <None Include="Resources\Content\Localizations\Terraria.Localization.Content.ru-RU.RupeeReplacer.json" />
+    <None Include="Resources\Content\Localizations\Terraria.Localization.Content.zh-Hans.RupeeReplacer.json" />
     <None Include="Resources\xcompress32.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeAnimationBlue.png" />
+    <None Include="Resources\Content\Images\RupeeAnimationBlue.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeAnimationGold.png" />
+    <None Include="Resources\Content\Images\RupeeAnimationGold.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeAnimationGreen.png" />
+    <None Include="Resources\Content\Images\RupeeAnimationGreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeAnimationOrange.png" />
+    <None Include="Resources\Content\Images\RupeeAnimationOrange.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeAnimationPurple.png" />
+    <None Include="Resources\Content\Images\RupeeAnimationPurple.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeAnimationRed.png" />
+    <None Include="Resources\Content\Images\RupeeAnimationRed.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeAnimationYellow.png" />
+    <None Include="Resources\Content\Images\RupeeAnimationYellow.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeDustBlue.png" />
+    <None Include="Resources\Content\Images\RupeeDustBlue.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeDustGold.png" />
+    <None Include="Resources\Content\Images\RupeeDustGold.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeDustGreen.png" />
+    <None Include="Resources\Content\Images\RupeeDustGreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeDustOrange.png" />
+    <None Include="Resources\Content\Images\RupeeDustOrange.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeDustPurple.png" />
+    <None Include="Resources\Content\Images\RupeeDustPurple.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeDustRed.png" />
+    <None Include="Resources\Content\Images\RupeeDustRed.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeDustSilver.png" />
+    <None Include="Resources\Content\Images\RupeeDustSilver.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeDustYellow.png" />
+    <None Include="Resources\Content\Images\RupeeDustYellow.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeFallingBlue.png" />
+    <None Include="Resources\Content\Images\RupeeFallingBlue.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeFallingGold.png" />
+    <None Include="Resources\Content\Images\RupeeFallingGold.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeFallingGreen.png" />
+    <None Include="Resources\Content\Images\RupeeFallingGreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeFallingOrange.png" />
+    <None Include="Resources\Content\Images\RupeeFallingOrange.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeFallingPurple.png" />
+    <None Include="Resources\Content\Images\RupeeFallingPurple.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeFallingRed.png" />
+    <None Include="Resources\Content\Images\RupeeFallingRed.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeFallingSilver.png" />
+    <None Include="Resources\Content\Images\RupeeFallingSilver.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeFallingYellow.png" />
+    <None Include="Resources\Content\Images\RupeeFallingYellow.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Content\Images\RupeeItemBlue.png" />
@@ -299,28 +302,28 @@
     <Resource Include="Resources\Content\Images\RupeeItemYellow.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeTileBlue.png" />
+    <None Include="Resources\Content\Images\RupeeTileBlue.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeTileGold.png" />
+    <None Include="Resources\Content\Images\RupeeTileGold.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeTileGreen.png" />
+    <None Include="Resources\Content\Images\RupeeTileGreen.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeTileOrange.png" />
+    <None Include="Resources\Content\Images\RupeeTileOrange.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeTilePurple.png" />
+    <None Include="Resources\Content\Images\RupeeTilePurple.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeTileRed.png" />
+    <None Include="Resources\Content\Images\RupeeTileRed.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeTileSilver.png" />
+    <None Include="Resources\Content\Images\RupeeTileSilver.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeTileYellow.png" />
+    <None Include="Resources\Content\Images\RupeeTileYellow.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Content\Sounds\RupeeCollect1.wav" />
@@ -332,7 +335,7 @@
     <Resource Include="Resources\Content\Sounds\RupeePlace.wav" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\Content\Images\RupeeAnimationSilver.png" />
+    <None Include="Resources\Content\Images\RupeeAnimationSilver.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Content\Images\RupeeItemSilver.png" />
@@ -348,6 +351,69 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\SilverCoin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RupeeReplacer\RupeeReplacer.csproj">
+      <Project>{e0bd6e3e-d7db-4321-b772-198e97e6d26b}</Project>
+      <Name>RupeeReplacer</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\LuckyRupee.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Content\Images\RupeeBulletBlue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Content\Images\RupeeBulletGold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Content\Images\RupeeBulletGreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Content\Images\RupeeBulletOrange.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Content\Images\RupeeBulletPurple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Content\Images\RupeeBulletRed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Content\Images\RupeeBulletSilver.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Content\Images\RupeeBulletYellow.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\RupeeGun.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\RupeeRing.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\RupeePortalBlue.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\RupeePortalGold.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\RupeePortalGreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\RupeePortalOrange.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\RupeePortalPurple.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\RupeePortalRed.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\RupeePortalSilver.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Content\Images\RupeePortalYellow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

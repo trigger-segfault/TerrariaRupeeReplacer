@@ -7,6 +7,10 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Resources;
+using TerrariaRupeeReplacer.Properties;
+using System.Globalization;
+using System.Collections;
 
 namespace TerrariaRupeeReplacer.Patching {
 	/**<summary>An exception thrown when the patcher is unable to locate the instructions to change.</summary>*/
@@ -119,6 +123,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			IL.MakeLargeAddressAware(ExePath);
 
 			CopyRequiredFiles();
+			CopyLocalizationFiles();
 		}
 		/**<summary>Copies the required dlls and files to the Terraria folder.</summary>*/
 		private static void CopyRequiredFiles() {
@@ -132,6 +137,40 @@ namespace TerrariaRupeeReplacer.Patching {
 			catch (Exception ex) {
 				throw new IOException("Error while trying to copy over required files.", ex);
 			}
+		}
+		/**<summary>Copies over localization files.</summary>*/
+		public static void CopyLocalizationFiles() {
+			/*string localizationPath = Path.Combine(ExeDirectory, "Localization");
+			string[] resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
+			ResourceManager rm = new ResourceManager("TerrariaRupeeReplacer.Properties.Resources", typeof(Resources).Assembly);
+			var resourceSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+			foreach (DictionaryEntry r in resourceSet) {
+				string key = r.Key.ToString();
+				Console.WriteLine(key);
+				string name = Path.GetFileName(key);
+				if (name.StartsWith("Terraria.Localization.Content.") && name.EndsWith(".json")) {
+					string path = Path.Combine(localizationPath, name);
+					byte[] data = (byte[])r.Value;
+					File.WriteAllBytes(path, data);
+				}
+			}*/
+			string localizationPath = Path.Combine(ExeDirectory, "Localization");
+			if (!Directory.Exists(localizationPath))
+				Directory.CreateDirectory(localizationPath);
+			WriteLocalization("de-DE", Resources.Terraria_Localization_Content_de_DE_RupeeReplacer);
+			WriteLocalization("en-US", Resources.Terraria_Localization_Content_en_US_RupeeReplacer);
+			WriteLocalization("es-ES", Resources.Terraria_Localization_Content_es_ES_RupeeReplacer);
+			WriteLocalization("fr-FR", Resources.Terraria_Localization_Content_fr_FR_RupeeReplacer);
+			WriteLocalization("it-IT", Resources.Terraria_Localization_Content_it_IT_RupeeReplacer);
+			WriteLocalization("pl-PL", Resources.Terraria_Localization_Content_pl_PL_RupeeReplacer);
+			WriteLocalization("pt-BR", Resources.Terraria_Localization_Content_pt_BR_RupeeReplacer);
+			WriteLocalization("ru-RU", Resources.Terraria_Localization_Content_ru_RU_RupeeReplacer);
+			WriteLocalization("zh-Hans", Resources.Terraria_Localization_Content_zh_Hans_RupeeReplacer);
+		}
+		private static void WriteLocalization(string culture, byte[] data) {
+			string localizationPath = Path.Combine(ExeDirectory, "Localization");
+			string path = Path.Combine(localizationPath, "Terraria.Localization.Content." + culture + ".RupeeReplacer.json");
+			File.WriteAllBytes(path, data);
 		}
 
 		#endregion
@@ -371,15 +410,30 @@ namespace TerrariaRupeeReplacer.Patching {
 		/**<summary>Patches coin names.</summary>*/
 		private static void Patch_LanguageManager_LoadLanguage() {
 			var loadLanguage = IL.GetMethodDefinition(LanguageManager, "LoadLanguage", 1);
+			var loadFilesForCulture = IL.GetMethodDefinition(LanguageManager, "LoadFilesForCulture", 1);
 			var _localizedTexts = IL.GetFieldDefinition(LanguageManager, "_localizedTexts");
 
-			var onLoadCoinNames = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnLoadCoinNames"));
 
-			IL.MethodInsert(loadLanguage, loadLanguage.Body.Instructions.Count - 2, new[] {
+			//var onLoadCoinNames = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnLoadCoinNames"));
+			var onLoadLocalizations = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnLoadLocalizations"));
+
+			int start = IL.ScanForInstructionPattern(loadLanguage,
+				new ILCheck(OpCodes.Call, loadFilesForCulture)
+			);
+			if (start == -1)
+				throw new PatcherException("Failed to find starting point for Terraria.LanguageManager.LoadLanguage");
+			start++;
+
+			IL.MethodInsert(loadLanguage, start, new[] {
+				Instruction.Create(OpCodes.Ldarg_1),
+				Instruction.Create(OpCodes.Call, onLoadLocalizations)
+			});
+
+			/*IL.MethodInsert(loadLanguage, loadLanguage.Body.Instructions.Count - 2, new[] {
 				Instruction.Create(OpCodes.Ldfld, _localizedTexts),
 				Instruction.Create(OpCodes.Call, onLoadCoinNames),
 				Instruction.Create(OpCodes.Ldarg_0)
-			});
+			});*/
 		}
 
 		#endregion

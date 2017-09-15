@@ -1,0 +1,74 @@
+{
+	"RupeeReplacer": {
+		"Rupee":		"Rupia",
+		"Rupees":		"Rupie",
+		"rupee":		"rupia",
+		"rupees":		"rupie",
+		
+		"CopperRupee":		"{$Rupee.Rupee} {$Rupee.copper}",
+		"SilverRupee":		"{$Rupee.Rupee} {$Rupee.silver}",
+		"GoldRupee":		"{$Rupee.Rupee} {$Rupee.gold}",
+		"PlatinumRupee":	"{$Rupee.Rupee} {$Rupee.platinum}"
+	},
+	"RupeeColors": {
+		"Green":	"Verde",
+		"Blue":		"Blu",
+		"Yellow":	"Gialla",
+		"Red":		"Rossa",
+		"Purple":	"Viola",
+		"Orange":	"Arancione",
+		"Silver":	"D'argento",
+		"Gold":		"D'oro",
+		
+		"green":	"verde",
+		"blue":		"blu",
+		"yellow":	"gialla",
+		"red":		"rossa",
+		"purple":	"viola",
+		"orange":	"arancione",
+		"silver":	"d'argento",
+		"gold":		"d'oro"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"{$Rupee.Rupee} fortunata",
+		"CoinGun":		"Pistola spara{$Rupee.rupee}",
+		"CoinRing":		"Anello di {$Rupee.rupees}"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"Colpendo i nemici a volte si guadagneranno più {$Rupee.rupees}",
+		"CoinGun":		"Utilizza le {$Rupee.rupees} come munizioni\nLe {$Rupee.rupees} di valore superiore infliggono più danni",
+		"CoinRing": 	"Aumenta la portata di raccolta delle {$Rupee.rupees}\nColpendo i nemici a volte si guadagneranno più {$Rupee.rupees}",
+		"GoldRing":		"Aumenta la portata di raccolta delle {$Rupee.rupees}",
+		"GreedyRing":	"Aumenta la portata di raccolta delle {$Rupee.rupees} e i negozi hanno prezzi più bassi\nColpendo i nemici a volte si guadagneranno più {$Rupee.rupees}"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"Portale di {$Rupee.rupees}",
+		
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	},
+	"LegacyDialog": {
+		"148":	"Want me to pull a {$Rupee.rupee} from behind your ear? No? Ok.",
+		"195":	"Se vuoi che un mercante si trasferisca, dovrai raccogliere molto denaro. 50 {$Rupee.rupees} {$Rupee.silver} dovrebbero bastare!",
+		"381":	"Eccoti di nuovo, a prendere tutte le mie {$Rupee.rupees}! Prendile e sparisci dalla mia vista!",
+		"391":	"Oh, so you just see me as a {$Rupee.rupee} sign, eh? 'Cus every time you see me, you ask me.",
+		"393":	"Bah! Di nuovo tu? Hai già arraffato le mie  {$Rupee.rupees} pochi istanti fa, quindi sparisci e torna più tardi!"
+	},
+	
+	"AnglerQuestText": {
+		"Quest_TropicalBarracuda": "I pesci piraña e gli squali sono orribili! Davvero brutti! Sai che c'è un pesce davvero carino, ma capace di staccarti la testa? Pagherei 2 {$Rupee.rupees} {$Rupee.platinum} per vederglielo fare, quindi... vai a catturarlo per me. Però portamelo prima che ti stacchi la testa!\n\n(Catturato nella giungla, in superficie)"
+	}
+}

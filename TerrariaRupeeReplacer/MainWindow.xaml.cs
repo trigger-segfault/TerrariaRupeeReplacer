@@ -21,6 +21,7 @@ using TerrariaRupeeReplacer.Properties;
 using Microsoft.Win32;
 using System.Xml;
 using System.Diagnostics;
+using System.Timers;
 
 namespace TerrariaRupeeReplacer {
 	/**<summary>The main window running Terraria Item Modifier.</summary>*/
@@ -56,7 +57,16 @@ namespace TerrariaRupeeReplacer {
 		private string TypeName {
 			get { return (Patcher.IsTMod ? "tModLoader Terraria" : "Vanilla Terraria"); }
 		}
-		
+
+		#endregion
+		//=========== MEMBERS ============
+		#region Members
+
+		/**<summary>The timer for the portal animation.</summary>*/
+		private Timer portalTimer = new Timer(1000 / 60 * 6);
+		/**<summary>The current animation frame of the portal.</summary>*/
+		private int portalFrame = 0;
+
 		#endregion
 		//========= CONSTRUCTORS =========
 		#region Constructors
@@ -66,6 +76,9 @@ namespace TerrariaRupeeReplacer {
 			InitializeComponent();
 
 			LoadSettings();
+
+			portalTimer.AutoReset = true;
+			portalTimer.Elapsed += OnPortalTimer;
 
 			// Setup version in title
 			this.Title += " - v" + VanillaSupportedVersionHigh.ToString();
@@ -86,6 +99,13 @@ namespace TerrariaRupeeReplacer {
 			DataObject.AddCopyingHandler(textBoxExe, (sender, e) => { if (e.IsDragDrop) e.CancelCommand(); });
 		}
 
+		private void OnPortalTimer(object sender, ElapsedEventArgs e) {
+			Dispatcher.Invoke(() => {
+				portalFrame = (portalFrame + 1) % 4;
+				imagePortal.Viewbox = new Rect(0, portalFrame * 34, 32, 32);
+			});
+		}
+
 		#endregion
 		//=========== SETTINGS ===========
 		#region Settings
@@ -99,13 +119,7 @@ namespace TerrariaRupeeReplacer {
 					Patcher.ExePath = TerrariaLocator.TerrariaPath;
 				}
 			}
-			textBoxExe.Text = Patcher.ExePath;
-
 			Patcher.IsTMod = Settings.Default.IsTMod;
-			if (Patcher.IsTMod)
-				radioButtonTMod.IsChecked = true;
-			else
-				radioButtonVanilla.IsChecked = true;
 
 			var rupeeColors = (RupeeColors[])Enum.GetValues(typeof(RupeeColors));
 			foreach (RupeeColors color in rupeeColors) {
@@ -123,10 +137,37 @@ namespace TerrariaRupeeReplacer {
 				AddComboBoxItem(comboBoxGold, color);
 				AddComboBoxItem(comboBoxPlat, color);
 			}
+
+			ContentReplacer.CoinGun = Settings.Default.CoinGun;
+			ContentReplacer.LuckyCoin = Settings.Default.LuckyCoin;
+			ContentReplacer.CoinRing = Settings.Default.CoinRing;
+			ContentReplacer.CoinPortal = Settings.Default.CoinPortal;
+
+			// Try and load Terraria's current rupee configuration
+			LoadCurrentConfiguration();
+
+			// Setup controls
+			textBoxExe.Text = Patcher.ExePath;
+
+			if (Patcher.IsTMod)
+				radioButtonTMod.IsChecked = true;
+			else
+				radioButtonVanilla.IsChecked = true;
+
+			if (ContentReplacer.CoinPortal)
+				portalTimer.Start();
+
 			comboBoxCopper.SelectedIndex = (int)ContentReplacer.Copper;
 			comboBoxSilver.SelectedIndex = (int)ContentReplacer.Silver;
 			comboBoxGold.SelectedIndex = (int)ContentReplacer.Gold;
 			comboBoxPlat.SelectedIndex = (int)ContentReplacer.Platinum;
+
+			checkBoxRupeeGun.IsChecked = ContentReplacer.CoinGun;
+			checkBoxLuckyRupee.IsChecked = ContentReplacer.LuckyCoin;
+			checkBoxRupeeRing.IsChecked = ContentReplacer.CoinRing;
+			checkBoxRupeePortal.IsChecked = ContentReplacer.CoinPortal;
+
+			imagePortal.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/Content/Images/RupeePortal" + ContentReplacer.Gold.ToString() + ".png"));
 		}
 		/**<summary>Saves the application settings.</summary>*/
 		private void SaveSettings() {
@@ -138,7 +179,70 @@ namespace TerrariaRupeeReplacer {
 			Settings.Default.Silver		= ContentReplacer.Silver.ToString();
 			Settings.Default.Gold		= ContentReplacer.Gold.ToString();
 			Settings.Default.Platinum	= ContentReplacer.Platinum.ToString();
+
+			Settings.Default.CoinGun = ContentReplacer.CoinGun;
+			Settings.Default.LuckyCoin = ContentReplacer.LuckyCoin;
+			Settings.Default.CoinRing = ContentReplacer.CoinRing;
+			Settings.Default.CoinPortal = ContentReplacer.CoinPortal;
 			Settings.Default.Save();
+		}
+		/**<summary>Loads the current rupee configuration in Terraria.</summary>*/
+		private void LoadCurrentConfiguration() {
+			try {
+				string configPath = IOPath.Combine(Patcher.ExeDirectory, CoinReplacer.ConfigName);
+
+				XmlDocument doc = new XmlDocument();
+				XmlNode node;
+				XmlAttribute attribute;
+
+				doc.Load(configPath);
+
+				RupeeColors rupeeValue;
+				bool boolValue;
+
+				node = doc.SelectSingleNode("/RupeeReplacer/CopperCoin");
+				attribute = (node != null ? node.Attributes["Color"] : null);
+				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
+					ContentReplacer.Copper = rupeeValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/SilverCoin");
+				attribute = (node != null ? node.Attributes["Color"] : null);
+				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
+					ContentReplacer.Silver = rupeeValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/GoldCoin");
+				attribute = (node != null ? node.Attributes["Color"] : null);
+				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
+					ContentReplacer.Gold = rupeeValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/PlatinumCoin");
+				attribute = (node != null ? node.Attributes["Color"] : null);
+				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
+					ContentReplacer.Platinum = rupeeValue;
+				}
+
+				node = doc.SelectSingleNode("/RupeeReplacer/CoinGun");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
+					ContentReplacer.CoinGun = boolValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/LuckyCoin");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
+					ContentReplacer.LuckyCoin = boolValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/CoinRing");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
+					ContentReplacer.CoinRing = boolValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/CoinPortal");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
+					ContentReplacer.CoinPortal = boolValue;
+				}
+			}
+			catch { }
 		}
 
 		#endregion
@@ -178,6 +282,8 @@ namespace TerrariaRupeeReplacer {
 			item.Content = grid;
 
 			comboBox.Items.Add(item);
+
+			imagePortal.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/Content/Images/RupeePortal" + ContentReplacer.Gold.ToString() + ".png"));
 		}
 		/**<summary>Saves the xml to be modified for use in Terraria.</summary>*/
 		private void SaveRupeeConfigXml() {
@@ -190,21 +296,38 @@ namespace TerrariaRupeeReplacer {
 				XmlElement replacer = doc.CreateElement("RupeeReplacer");
 				doc.AppendChild(replacer);
 
-				XmlElement coin = doc.CreateElement("CopperCoin");
-				coin.SetAttribute("Rupee", ContentReplacer.Copper.ToString());
-				replacer.AppendChild(coin);
+				XmlElement element = doc.CreateElement("CopperCoin");
+				element.SetAttribute("Color", ContentReplacer.Copper.ToString());
+				replacer.AppendChild(element);
 
-				coin = doc.CreateElement("SilverCoin");
-				coin.SetAttribute("Rupee", ContentReplacer.Silver.ToString());
-				replacer.AppendChild(coin);
+				element = doc.CreateElement("SilverCoin");
+				element.SetAttribute("Color", ContentReplacer.Silver.ToString());
+				replacer.AppendChild(element);
 
-				coin = doc.CreateElement("GoldCoin");
-				coin.SetAttribute("Rupee", ContentReplacer.Gold.ToString());
-				replacer.AppendChild(coin);
+				element = doc.CreateElement("GoldCoin");
+				element.SetAttribute("Color", ContentReplacer.Gold.ToString());
+				replacer.AppendChild(element);
 
-				coin = doc.CreateElement("PlatinumCoin");
-				coin.SetAttribute("Rupee", ContentReplacer.Platinum.ToString());
-				replacer.AppendChild(coin);
+				element = doc.CreateElement("PlatinumCoin");
+				element.SetAttribute("Color", ContentReplacer.Platinum.ToString());
+				replacer.AppendChild(element);
+
+
+				element = doc.CreateElement("CoinGun");
+				element.SetAttribute("Enabled", ContentReplacer.CoinGun.ToString());
+				replacer.AppendChild(element);
+
+				element = doc.CreateElement("LuckyCoin");
+				element.SetAttribute("Enabled", ContentReplacer.LuckyCoin.ToString());
+				replacer.AppendChild(element);
+
+				element = doc.CreateElement("CoinRing");
+				element.SetAttribute("Enabled", ContentReplacer.CoinRing.ToString());
+				replacer.AppendChild(element);
+
+				element = doc.CreateElement("CoinPortal");
+				element.SetAttribute("Enabled", ContentReplacer.CoinPortal.ToString());
+				replacer.AppendChild(element);
 
 				doc.Save(configPath);
 			}
@@ -245,13 +368,6 @@ namespace TerrariaRupeeReplacer {
 			}
 			return (result == MessageBoxResult.Yes);
 		}
-		/**<summary>Updates the rupee color settings.</summary>*/
-		private void UpdateRupeeSettings() {
-			ContentReplacer.Copper = (RupeeColors)comboBoxCopper.SelectedIndex;
-			ContentReplacer.Silver = (RupeeColors)comboBoxSilver.SelectedIndex;
-			ContentReplacer.Gold = (RupeeColors)comboBoxGold.SelectedIndex;
-			ContentReplacer.Platinum = (RupeeColors)comboBoxPlat.SelectedIndex;
-		}
 
 		#endregion
 		//============ EVENTS ============
@@ -287,7 +403,6 @@ namespace TerrariaRupeeReplacer {
 					ErrorMessageBox.Show(ex, true);
 				return;
 			}
-
 		}
 		private void OnRestore(object sender = null, RoutedEventArgs e = null) {
 			MessageBoxResult result;
@@ -308,6 +423,10 @@ namespace TerrariaRupeeReplacer {
 			try {
 				Patcher.Restore();
 				bool someMissing = ContentReplacer.Restore();
+				// Clean up directory and remove config file
+				string configPath = IOPath.Combine(Patcher.ExeDirectory, CoinReplacer.ConfigName);
+				if (IOFile.Exists(configPath))
+					IOFile.Delete(configPath);
 				if (someMissing)
 					TriggerMessageBox.Show(this, MessageIcon.Info, "Terraria executable restored but some backup content files were missing!", "Missing Content");
 				else
@@ -420,9 +539,26 @@ namespace TerrariaRupeeReplacer {
 		}
 		private void OnGoldCoinChanged(object sender, SelectionChangedEventArgs e) {
 			ContentReplacer.Gold = (RupeeColors)comboBoxGold.SelectedIndex;
+			imagePortal.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/Content/Images/RupeePortal" + ContentReplacer.Gold.ToString() + ".png"));
 		}
 		private void OnPlatinumCoinChanged(object sender, SelectionChangedEventArgs e) {
 			ContentReplacer.Platinum = (RupeeColors)comboBoxPlat.SelectedIndex;
+		}
+		private void OnRupeeGunChecked(object sender, RoutedEventArgs e) {
+			ContentReplacer.CoinGun = checkBoxRupeeGun.IsChecked.Value;
+		}
+		private void OnLuckyRupeeChecked(object sender, RoutedEventArgs e) {
+			ContentReplacer.LuckyCoin = checkBoxLuckyRupee.IsChecked.Value;
+		}
+		private void OnRupeeRingChecked(object sender, RoutedEventArgs e) {
+			ContentReplacer.CoinRing = checkBoxRupeeRing.IsChecked.Value;
+		}
+		private void OnRupeePortalChecked(object sender, RoutedEventArgs e) {
+			ContentReplacer.CoinPortal = checkBoxRupeePortal.IsChecked.Value;
+			if (ContentReplacer.CoinPortal)
+				portalTimer.Start();
+			else
+				portalTimer.Stop();
 		}
 
 		#endregion

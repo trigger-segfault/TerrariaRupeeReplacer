@@ -1,0 +1,76 @@
+{
+	"Rupee": {
+		"Rupee":		"Rupee",
+		"Rupees":		"Rupees",
+		"rupee":		"rupee",
+		"rupees":		"rupees",
+		
+		"CopperRupee":		"{$Rupee.Copper} {$Rupee.Rupee}",
+		"SilverRupee":		"{$Rupee.Silver} {$Rupee.Rupee}",
+		"GoldRupee":		"{$Rupee.Gold} {$Rupee.Rupee}",
+		"PlatinumRupee":	"{$Rupee.Platinum} {$Rupee.Rupee}"
+	},
+	"RupeeColors": {
+		"Green":	"Green",
+		"Blue":		"Blue",
+		"Yellow":	"Yellow",
+		"Red":		"Red",
+		"Purple":	"Purple",
+		"Orange":	"Orange",
+		"Silver":	"Silver",
+		"Gold":		"Gold",
+		
+		"green":	"green",
+		"blue":		"blue",
+		"yellow":	"yellow",
+		"red":		"red",
+		"purple":	"purple",
+		"orange":	"orange",
+		"silver":	"silver",
+		"gold":		"gold"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"Lucky {$Rupee.Rupee}",
+		"CoinGun":		"{$Rupee.Rupee} Gun",
+		"CoinRing":		"{$Rupee.Rupee} Ring"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"Hitting enemies will sometimes drop extra {$Rupee.rupees}",
+		"CoinGun":		"Uses {$Rupee.rupees} for ammo\nHigher valued {$Rupee.rupees} do more damage",
+		"CoinRing": 	"Increases {$Rupee.rupee} pickup range\nHitting enemies will sometimes drop extra {$Rupee.rupees}",
+		"GoldRing":		"Increases {$Rupee.rupee} pickup range",
+		"GreedyRing":	"Increases {$Rupee.rupee} pickup range and shops have lower prices\nHitting enemies will sometimes drop extra {$Rupee.rupees}"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"{$Rupee.Rupee} Portal",
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}s",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}s",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}s",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}s"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	},
+	"LegacyDialog": {
+		"148":	"Want me to pull a {$Rupee.rupee} from behind your ear? No? Ok.",
+		"195":	"If you want a merchant to move in, you will need to gather plenty of money. 50 {$Rupee.silver} {$Rupee.rupees} should do the trick!",
+		"381":	"Here you are again, taking all my {$Rupee.rupees}! Just grab it and begone from my sight!",
+		"391":	"Oh, so you just see me as a {$Rupee.rupee} sign, eh? 'Cus every time you see me, you ask me.",
+		"393":	"Bah! You again? You just grabbed some of my {$Rupee.rupees} just moments ago, so bugger off and come back later!"
+	},
+	
+	"AnglerQuestText": {
+		"Quest_TropicalBarracuda": "Piranhas and sharks are ugly! Soooo ugly! Did you know there's a fish that looks very pretty and still can eat your face off? I would pay 2 {$Rupee.platinum} {$Rupee.rupees} to see that happen, by the way... To the point, though, you catchy for me. Just make sure I have it before you lose your face!\n\n(Caught Jungle Surface)"
+	},
+	"DyeTraderSpecialText": {
+		"NoPlant_2": "These dye bottles? Sorry dear friend, these don't take {$Rupee.rupees}. I only take the most precious and rare of flora in exchange for one of this!"
+	}
+}

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
@@ -36,14 +37,24 @@ namespace TerrariaRupeeReplacer {
 
 			public static ConstructorInfo ctor_LocalizedText;
 
+			public static FieldInfo _categoryGroupedKeys;
+			public static FieldInfo _localizedTexts;
+			
+			public static MethodInfo SetValue;
+
 			#endregion
 			//========= CONSTRUCTORS =========
 			#region Constructors
 
 			/**<summary>Aquire all of the reflection infos ahead of time to reduce reflection slowdown.</summary>*/
 			static TerrariaReflection() {
-				ctor_LocalizedText       = typeof(LocalizedText).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
+				ctor_LocalizedText			= typeof(LocalizedText).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
 
+				_categoryGroupedKeys		= typeof(LanguageManager).GetField("_categoryGroupedKeys", BindingFlags.NonPublic | BindingFlags.Instance);
+				_localizedTexts				= typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance);
+
+				SetValue					= typeof(LocalizedText).GetMethod("SetValue", BindingFlags.NonPublic | BindingFlags.Instance);
+				
 				// Hooray for reflection!
 			}
 
@@ -56,14 +67,19 @@ namespace TerrariaRupeeReplacer {
 		//--------------------------------
 		#region Replacements
 
-		private static readonly Color PlatColor = new Color(220, 220, 198);
+		private static readonly Color PlatinumColor = new Color(220, 220, 198);
 		private static readonly Color GoldColor = new Color(224, 201, 92);
 		private static readonly Color SilverColor = new Color(181, 192, 193);
 		private static readonly Color CopperColor = new Color(246, 138, 96);
-		private static readonly string PlatName = "Platinum";
-		private static readonly string GoldName = "Gold";
-		private static readonly string SilverName = "Silver";
-		private static readonly string CopperName = "Copper";
+		private static readonly string Platinum = "Platinum";
+		private static readonly string Gold = "Gold";
+		private static readonly string Silver = "Silver";
+		private static readonly string Copper = "Copper";
+
+		private static readonly bool CoinGun = true;
+		private static readonly bool LuckyCoin = true;
+		private static readonly bool CoinRing = true;
+		private static readonly bool CoinPortal = true;
 
 		#endregion
 		//--------------------------------
@@ -84,6 +100,8 @@ namespace TerrariaRupeeReplacer {
 		public const string ConfigName = "RupeeConfig.xml";
 		/**<summary>The path of the config file.</summary>*/
 		public static readonly string ConfigPath = Path.Combine(Environment.CurrentDirectory, ConfigName);
+		/**<summary>The path of the config file.</summary>*/
+		public static readonly string LocalizationDirectory = Path.Combine(Environment.CurrentDirectory, "Localization");
 
 		#endregion
 		//--------------------------------
@@ -103,43 +121,61 @@ namespace TerrariaRupeeReplacer {
 				doc.Load(ConfigPath);
 
 				node = doc.SelectSingleNode("/RupeeReplacer/CopperCoin");
-				attribute = (node != null ? node.Attributes["Rupee"] : null);
+				attribute = (node != null ? node.Attributes["Color"] : null);
 				if (attribute != null) {
 					name = attribute.InnerText;
 					if (Rupees.ContainsKey(name)) {
 						CopperColor = Rupees[name];
-						CopperName = name;
+						Copper = name;
 					}
 				}
-
 				node = doc.SelectSingleNode("/RupeeReplacer/SilverCoin");
-				attribute = (node != null ? node.Attributes["Rupee"] : null);
+				attribute = (node != null ? node.Attributes["Color"] : null);
 				if (attribute != null) {
 					name = attribute.InnerText;
 					if (Rupees.ContainsKey(name)) {
 						SilverColor = Rupees[name];
-						SilverName = name;
+						Silver = name;
 					}
 				}
-
 				node = doc.SelectSingleNode("/RupeeReplacer/GoldCoin");
-				attribute = (node != null ? node.Attributes["Rupee"] : null);
+				attribute = (node != null ? node.Attributes["Color"] : null);
 				if (attribute != null) {
 					name = attribute.InnerText;
 					if (Rupees.ContainsKey(name)) {
 						GoldColor = Rupees[name];
-						GoldName = name;
+						Gold = name;
 					}
 				}
-
 				node = doc.SelectSingleNode("/RupeeReplacer/PlatinumCoin");
-				attribute = (node != null ? node.Attributes["Rupee"] : null);
+				attribute = (node != null ? node.Attributes["Color"] : null);
 				if (attribute != null) {
 					name = attribute.InnerText;
 					if (Rupees.ContainsKey(name)) {
-						PlatColor = Rupees[name];
-						PlatName = name;
+						PlatinumColor = Rupees[name];
+						Platinum = name;
 					}
+				}
+
+				node = doc.SelectSingleNode("/RupeeReplacer/CoinGun");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null) {
+					bool.TryParse(attribute.InnerText, out CoinGun);
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/LuckyCoin");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null) {
+					bool.TryParse(attribute.InnerText, out LuckyCoin);
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/CoinRing");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null) {
+					bool.TryParse(attribute.InnerText, out CoinRing);
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/CoinPortal");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null) {
+					bool.TryParse(attribute.InnerText, out CoinPortal);
 				}
 			}
 			catch { }
@@ -148,18 +184,44 @@ namespace TerrariaRupeeReplacer {
 		#endregion
 		//=========== HELPERS ============
 		#region Helpers
-
-		/**<summary>Sets the name of a coin.</summary>*/
-		private static void SetCoinName(Dictionary<string, LocalizedText> locTexts, string coinID, string coinName) {
-			LocalizedText locText = (LocalizedText)TerrariaReflection.ctor_LocalizedText.Invoke(new object[] { "ItemName." + coinID, coinName + " Rupee" });
-			locTexts["ItemName." + coinID] = locText;
-		}
+		
 		/**<summary>Sets the light color of a coin.</summary>*/
 		private static void SetCoinLight(ref float r, ref float g, ref float b, Color color) {
 			const float baseline = 0.2f;
 			r *= Math.Max((float)color.R / 255f, baseline);
 			g *= Math.Max((float)color.G / 255f, baseline);
 			b *= Math.Max((float)color.B / 255f, baseline);
+		}
+		/**<summary>Adds a translation entry to the localization manager.</summary>*/
+		private static void AddTranslation(string key1, string key2, string value) {
+			var _localizedTexts = (Dictionary<string, LocalizedText>)TerrariaReflection._localizedTexts.GetValue(LanguageManager.Instance);
+			var _categoryGroupedKeys = (Dictionary<string, List<string>>)TerrariaReflection._categoryGroupedKeys.GetValue(LanguageManager.Instance);
+
+			string keyFull = key1 + "." + key2;
+			
+			// Don't rename lucky coin if not resprited
+			if (keyFull == "ItemName.LuckyCoin" && !LuckyCoin)
+				return;
+
+			if (_localizedTexts.ContainsKey(keyFull)) {
+				TerrariaReflection.SetValue.Invoke(_localizedTexts[keyFull], new object[] { value });
+			}
+			else {
+				LocalizedText locText = (LocalizedText)TerrariaReflection.ctor_LocalizedText.Invoke(new object[] { keyFull, value });
+				_localizedTexts.Add(keyFull, locText);
+				if (!_categoryGroupedKeys.ContainsKey(key1)) {
+					_categoryGroupedKeys.Add(key1, new List<string>());
+				}
+				_categoryGroupedKeys[key1].Add(key2);
+			}
+		}
+		/**<summary>Gets the name of a rupee color.</summary>*/
+		private static string GetColorName(string name, bool lower) {
+			return Language.GetTextValue("RupeeColors." + (lower ? name.ToLower() : name));
+		}
+		/**<summary>Gets the name of a rupee color.</summary>*/
+		private static string GetRupeeName(bool lower, bool plural) {
+			return Language.GetTextValue("Rupee." + (lower ? "rupee" : "Rupee") + (plural ? "s" : ""));
 		}
 
 		#endregion
@@ -203,22 +265,19 @@ namespace TerrariaRupeeReplacer {
 				copper = totalValue;
 			}
 			if (plat > 0) {
-				text += plat + " " + PlatName.ToLower() + " ";
+				text += plat + " " + GetColorName(Platinum, true) + " ";
 			}
 			if (gold > 0) {
-				text += gold + " " + GoldName.ToLower() + " ";
+				text += gold + " " + GetColorName(Gold, true) + " ";
 			}
 			if (silver > 0) {
-				text += silver + " " + SilverName.ToLower() + " ";
+				text += silver + " " + GetColorName(Silver, true) + " ";
 			}
 			if (copper > 0) {
-				text += copper + " " + CopperName.ToLower() + " ";
+				text += copper + " " + GetColorName(Copper, true) + " ";
 			}
-			text += "rupee";
-			if (coinValue != 1000000 && coinValue != 10000 &&
-				coinValue != 100 && coinValue != 1) {
-				text += "s";
-			}
+			text += GetRupeeName(true, coinValue != 1000000 && coinValue != 10000 &&
+				coinValue != 100 && coinValue != 1);
 
 			if (!Main.HoverItem.buy) {
 				array[num4] = Lang.tip[49].Value + " " + text;
@@ -231,9 +290,9 @@ namespace TerrariaRupeeReplacer {
 			int alpha = (int)Main.mouseTextColor;
 			if (plat > 0) {
 				color = new Color(
-					(int)((byte)((float)PlatColor.R * mouseTextColor)),
-					(int)((byte)((float)PlatColor.G * mouseTextColor)),
-					(int)((byte)((float)PlatColor.B * mouseTextColor)),
+					(int)((byte)((float)PlatinumColor.R * mouseTextColor)),
+					(int)((byte)((float)PlatinumColor.G * mouseTextColor)),
+					(int)((byte)((float)PlatinumColor.B * mouseTextColor)),
 				alpha);
 			}
 			else if (gold > 0) {
@@ -291,14 +350,14 @@ namespace TerrariaRupeeReplacer {
 				{
 						text,
 						"[c/",
-						Colors.AlphaDarken(PlatColor).Hex3(),
+						Colors.AlphaDarken(PlatinumColor).Hex3(),
 						":",
 						plat,
 						" ",
-						PlatName.ToLower(),
+						GetColorName(Platinum, true),
 						"] "
 				});
-				rupeeColor = PlatColor;
+				rupeeColor = PlatinumColor;
 			}
 			if (gold > 0) {
 				text = string.Concat(new object[]
@@ -309,7 +368,7 @@ namespace TerrariaRupeeReplacer {
 						":",
 						gold,
 						" ",
-						GoldName.ToLower(),
+						GetColorName(Gold, true),
 						"] "
 				});
 				rupeeColor = GoldColor;
@@ -323,7 +382,7 @@ namespace TerrariaRupeeReplacer {
 						":",
 						silver,
 						" ",
-						SilverName.ToLower(),
+						GetColorName(Silver, true),
 						"] "
 				});
 				rupeeColor = SilverColor;
@@ -337,7 +396,7 @@ namespace TerrariaRupeeReplacer {
 						":",
 						copper,
 						" ",
-						CopperName.ToLower(),
+						GetColorName(Copper, true),
 						"] "
 				});
 				rupeeColor = CopperColor;
@@ -348,9 +407,8 @@ namespace TerrariaRupeeReplacer {
 					"[c/",
 					Colors.AlphaDarken(rupeeColor/*Color.White*/).Hex3(),
 					":",
-					"rupee",
-					(cost != 1000000 && cost != 10000 && cost != 100 && cost != 1 ? "s" : ""),
-					"] "
+					GetRupeeName(true, cost != 1000000 && cost != 10000 && cost != 100 && cost != 1),
+					"]"
 			});
 			return text;
 		}
@@ -375,22 +433,19 @@ namespace TerrariaRupeeReplacer {
 			int copper = i;
 			string text = "";
 			if (plat > 0) {
-				text += string.Format("{0} {1} ", plat, PlatName.ToLower());
+				text += string.Format("{0} {1} ", plat, GetColorName(Platinum, true));
 			}
 			if (gold > 0) {
-				text += string.Format("{0} {1} ", gold, GoldName.ToLower());
+				text += string.Format("{0} {1} ", gold, GetColorName(Gold, true));
 			}
 			if (silver > 0) {
-				text += string.Format("{0} {1} ", silver, SilverName.ToLower());
+				text += string.Format("{0} {1} ", silver, GetColorName(Silver, true));
 			}
 			if (copper > 0) {
-				text += string.Format("{0} {1} ", copper, CopperName.ToLower());
+				text += string.Format("{0} {1} ", copper, GetColorName(Copper, true));
 			}
-			text += "rupee";
-			if (value != 1000000 && value != 10000 &&
-				value != 100 && value != 1) {
-				text += "s";
-			}
+			text += GetRupeeName(true, value != 1000000 && value != 10000 &&
+				value != 100 && value != 1);
 			return text;
 		}
 
@@ -438,7 +493,7 @@ namespace TerrariaRupeeReplacer {
 				brightness = 1.1f;
 			}
 			else if (dust.type == 247) {
-				SetCoinLight(ref r, ref g, ref b, PlatColor);
+				SetCoinLight(ref r, ref g, ref b, PlatinumColor);
 				brightness = 1.2f;
 			}
 			r *= brightness;
@@ -469,11 +524,10 @@ namespace TerrariaRupeeReplacer {
 			Main.itemText[i].coinValue += value;
 			OnValueToName(Main.itemText[i]);
 			Vector2 vector = Main.fontMouseText.MeasureString(Main.itemText[i].name);
-			//Main.itemText[i].name = text;
 			if (Main.itemText[i].coinValue >= 1000000) {
 				if (Main.itemText[i].lifeTime < 300)
 					Main.itemText[i].lifeTime = 300;
-				Main.itemText[i].color = PlatColor;
+				Main.itemText[i].color = PlatinumColor;
 			}
 			else if (Main.itemText[i].coinValue >= 10000) {
 				if (Main.itemText[i].lifeTime < 240)
@@ -512,7 +566,7 @@ namespace TerrariaRupeeReplacer {
 				if (Main.itemText[i].lifeTime < 300) {
 					Main.itemText[i].lifeTime = 300;
 				}
-				Main.itemText[i].color = PlatColor;
+				Main.itemText[i].color = PlatinumColor;
 				return;
 			}
 			if (Main.itemText[i].coinValue >= 10000) {
@@ -563,22 +617,19 @@ namespace TerrariaRupeeReplacer {
 			}
 			itemText.name = "";
 			if (plat > 0) {
-				itemText.name += plat + string.Format(" {0} ", PlatName);
+				itemText.name += plat + string.Format(" {0} ", GetColorName(Platinum, false));
 			}
 			if (gold > 0) {
-				itemText.name += gold + string.Format(" {0} ", GoldName);
+				itemText.name += gold + string.Format(" {0} ", GetColorName(Gold, false));
 			}
 			if (silver > 0) {
-				itemText.name += silver + string.Format(" {0} ", SilverName);
+				itemText.name += silver + string.Format(" {0} ", GetColorName(Silver, false));
 			}
 			if (copper > 0) {
-				itemText.name += copper + string.Format(" {0} ", CopperName);
+				itemText.name += copper + string.Format(" {0} ", GetColorName(Copper, false));
 			}
-			itemText.name += "Rupee";
-			if (itemText.coinValue != 1000000 && itemText.coinValue != 10000 &&
-				itemText.coinValue != 100 && itemText.coinValue != 1) {
-				itemText.name += "s";
-			}
+			itemText.name += GetRupeeName(false, itemText.coinValue != 1000000 && itemText.coinValue != 10000 &&
+				itemText.coinValue != 100 && itemText.coinValue != 1);
 		}
 
 		#endregion
@@ -586,11 +637,36 @@ namespace TerrariaRupeeReplacer {
 		#region Terraria.Localization.LanguageManager
 
 		/**<summary>Patches coin names.</summary>*/
-		public static void OnLoadCoinNames(Dictionary<string, LocalizedText> locTexts) {
-			SetCoinName(locTexts, "CopperCoin", CopperName);
-			SetCoinName(locTexts, "SilverCoin", SilverName);
-			SetCoinName(locTexts, "GoldCoin", GoldName);
-			SetCoinName(locTexts, "PlatinumCoin", PlatName);
+		public static void OnLoadLocalizations(GameCulture culture) {
+			try {
+				AddTranslation("Rupee", "Copper", "{$RupeeColors." + Copper + "}");
+				AddTranslation("Rupee", "Silver", "{$RupeeColors." + Silver + "}");
+				AddTranslation("Rupee", "Gold", "{$RupeeColors." + Gold + "}");
+				AddTranslation("Rupee", "Platinum", "{$RupeeColors." + Platinum + "}");
+				AddTranslation("Rupee", "copper", "{$RupeeColors." + Copper.ToLower() + "}");
+				AddTranslation("Rupee", "silver", "{$RupeeColors." + Silver.ToLower() + "}");
+				AddTranslation("Rupee", "gold", "{$RupeeColors." + Gold.ToLower() + "}");
+				AddTranslation("Rupee", "platinum", "{$RupeeColors." + Platinum.ToLower() + "}");
+
+				AddTranslation("ItemName", "CopperCoin", "{$Rupee.CopperRupee}");
+				AddTranslation("ItemName", "SilverCoin", "{$Rupee.SilverRupee}");
+				AddTranslation("ItemName", "GoldCoin", "{$Rupee.GoldRupee}");
+				AddTranslation("ItemName", "PlatinumCoin", "{$Rupee.PlatinumRupee}");
+
+				string filePath = Path.Combine(
+					LocalizationDirectory,
+					"Terraria.Localization.Content." + culture.CultureInfo.Name + ".RupeeReplacer.json"
+				);
+				string fileText = File.ReadAllText(filePath, Encoding.UTF8);
+				foreach (KeyValuePair<string, Dictionary<string, string>> keyValuePair in JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(fileText)) {
+					foreach (KeyValuePair<string, string> keyValuePair2 in keyValuePair.Value) {
+						AddTranslation(keyValuePair.Key, keyValuePair2.Key, keyValuePair2.Value);
+					}
+				}
+			}
+			catch (Exception ex) {
+				ErrorLogger.WriteException(ex);
+			}
 		}
 
 		#endregion

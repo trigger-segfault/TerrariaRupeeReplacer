@@ -160,6 +160,9 @@
   <data name="Logo112" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Logo112.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="LuckyRupee" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\LuckyRupee.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="PlatinumCoin" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\PlatinumCoin.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -189,6 +192,30 @@
   </data>
   <data name="RupeeAnimationYellow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Content\Images\RupeeAnimationYellow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeeBulletBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeeBulletBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeeBulletGold" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeeBulletGold.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeeBulletGreen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeeBulletGreen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeeBulletOrange" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeeBulletOrange.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeeBulletPurple" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeeBulletPurple.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeeBulletRed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeeBulletRed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeeBulletSilver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeeBulletSilver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeeBulletYellow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeeBulletYellow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RupeeCollect1" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Content\Sounds\RupeeCollect1.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -244,6 +271,9 @@
   <data name="RupeeFallingYellow" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Content\Images\RupeeFallingYellow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="RupeeGun" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeeGun.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
   <data name="RupeeItemBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Content\Images\RupeeItemBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -270,6 +300,33 @@
   </data>
   <data name="RupeePlace" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Content\Sounds\RupeePlace.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="RupeePortalBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeePortalBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeePortalGold" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeePortalGold.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeePortalGreen" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeePortalGreen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeePortalOrange" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeePortalOrange.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeePortalPurple" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeePortalPurple.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeePortalRed" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeePortalRed.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeePortalSilver" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeePortalSilver.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeePortalYellow" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeePortalYellow.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="RupeeRing" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Images\RupeeRing.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="RupeeTileBlue" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Content\Images\RupeeTileBlue.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -300,6 +357,33 @@
   </data>
   <data name="TerrariaIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Icons\TerrariaIcon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Terraria_Localization_Content_de_DE_RupeeReplacer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Localizations\Terraria.Localization.Content.de-DE.RupeeReplacer.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Terraria_Localization_Content_en_US_RupeeReplacer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Localizations\Terraria.Localization.Content.en-US.RupeeReplacer.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Terraria_Localization_Content_es_ES_RupeeReplacer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Localizations\Terraria.Localization.Content.es-ES.RupeeReplacer.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Terraria_Localization_Content_fr_FR_RupeeReplacer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Localizations\Terraria.Localization.Content.fr-FR.RupeeReplacer.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Terraria_Localization_Content_it_IT_RupeeReplacer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Localizations\Terraria.Localization.Content.it-IT.RupeeReplacer.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Terraria_Localization_Content_pl_PL_RupeeReplacer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Localizations\Terraria.Localization.Content.pl-PL.RupeeReplacer.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Terraria_Localization_Content_pt_BR_RupeeReplacer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Localizations\Terraria.Localization.Content.pt-BR.RupeeReplacer.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Terraria_Localization_Content_ru_RU_RupeeReplacer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Localizations\Terraria.Localization.Content.ru-RU.RupeeReplacer.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Terraria_Localization_Content_zh_Hans_RupeeReplacer" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Content\Localizations\Terraria.Localization.Content.zh-Hans.RupeeReplacer.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="VariableList" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Icons\VariableList.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

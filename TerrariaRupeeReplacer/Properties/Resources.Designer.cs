@@ -203,6 +203,16 @@ namespace TerrariaRupeeReplacer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap LuckyRupee {
+            get {
+                object obj = ResourceManager.GetObject("LuckyRupee", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap PlatinumCoin {
             get {
                 object obj = ResourceManager.GetObject("PlatinumCoin", resourceCulture);
@@ -296,6 +306,86 @@ namespace TerrariaRupeeReplacer.Properties {
         internal static System.Drawing.Bitmap RupeeAnimationYellow {
             get {
                 object obj = ResourceManager.GetObject("RupeeAnimationYellow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeeBulletBlue {
+            get {
+                object obj = ResourceManager.GetObject("RupeeBulletBlue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeeBulletGold {
+            get {
+                object obj = ResourceManager.GetObject("RupeeBulletGold", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeeBulletGreen {
+            get {
+                object obj = ResourceManager.GetObject("RupeeBulletGreen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeeBulletOrange {
+            get {
+                object obj = ResourceManager.GetObject("RupeeBulletOrange", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeeBulletPurple {
+            get {
+                object obj = ResourceManager.GetObject("RupeeBulletPurple", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeeBulletRed {
+            get {
+                object obj = ResourceManager.GetObject("RupeeBulletRed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeeBulletSilver {
+            get {
+                object obj = ResourceManager.GetObject("RupeeBulletSilver", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeeBulletYellow {
+            get {
+                object obj = ResourceManager.GetObject("RupeeBulletYellow", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -481,6 +571,16 @@ namespace TerrariaRupeeReplacer.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap RupeeGun {
+            get {
+                object obj = ResourceManager.GetObject("RupeeGun", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap RupeeItemBlue {
             get {
                 object obj = ResourceManager.GetObject("RupeeItemBlue", resourceCulture);
@@ -564,6 +664,96 @@ namespace TerrariaRupeeReplacer.Properties {
         internal static System.IO.UnmanagedMemoryStream RupeePlace {
             get {
                 return ResourceManager.GetStream("RupeePlace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeePortalBlue {
+            get {
+                object obj = ResourceManager.GetObject("RupeePortalBlue", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeePortalGold {
+            get {
+                object obj = ResourceManager.GetObject("RupeePortalGold", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeePortalGreen {
+            get {
+                object obj = ResourceManager.GetObject("RupeePortalGreen", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeePortalOrange {
+            get {
+                object obj = ResourceManager.GetObject("RupeePortalOrange", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeePortalPurple {
+            get {
+                object obj = ResourceManager.GetObject("RupeePortalPurple", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeePortalRed {
+            get {
+                object obj = ResourceManager.GetObject("RupeePortalRed", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeePortalSilver {
+            get {
+                object obj = ResourceManager.GetObject("RupeePortalSilver", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeePortalYellow {
+            get {
+                object obj = ResourceManager.GetObject("RupeePortalYellow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap RupeeRing {
+            get {
+                object obj = ResourceManager.GetObject("RupeeRing", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -654,6 +844,96 @@ namespace TerrariaRupeeReplacer.Properties {
             get {
                 object obj = ResourceManager.GetObject("SilverCoin", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Terraria_Localization_Content_de_DE_RupeeReplacer {
+            get {
+                object obj = ResourceManager.GetObject("Terraria_Localization_Content_de_DE_RupeeReplacer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Terraria_Localization_Content_en_US_RupeeReplacer {
+            get {
+                object obj = ResourceManager.GetObject("Terraria_Localization_Content_en_US_RupeeReplacer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Terraria_Localization_Content_es_ES_RupeeReplacer {
+            get {
+                object obj = ResourceManager.GetObject("Terraria_Localization_Content_es_ES_RupeeReplacer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Terraria_Localization_Content_fr_FR_RupeeReplacer {
+            get {
+                object obj = ResourceManager.GetObject("Terraria_Localization_Content_fr_FR_RupeeReplacer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Terraria_Localization_Content_it_IT_RupeeReplacer {
+            get {
+                object obj = ResourceManager.GetObject("Terraria_Localization_Content_it_IT_RupeeReplacer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Terraria_Localization_Content_pl_PL_RupeeReplacer {
+            get {
+                object obj = ResourceManager.GetObject("Terraria_Localization_Content_pl_PL_RupeeReplacer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Terraria_Localization_Content_pt_BR_RupeeReplacer {
+            get {
+                object obj = ResourceManager.GetObject("Terraria_Localization_Content_pt_BR_RupeeReplacer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Terraria_Localization_Content_ru_RU_RupeeReplacer {
+            get {
+                object obj = ResourceManager.GetObject("Terraria_Localization_Content_ru_RU_RupeeReplacer", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Terraria_Localization_Content_zh_Hans_RupeeReplacer {
+            get {
+                object obj = ResourceManager.GetObject("Terraria_Localization_Content_zh_Hans_RupeeReplacer", resourceCulture);
+                return ((byte[])(obj));
             }
         }
         

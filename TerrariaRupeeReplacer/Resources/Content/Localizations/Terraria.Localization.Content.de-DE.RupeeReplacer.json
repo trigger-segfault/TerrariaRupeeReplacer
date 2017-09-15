@@ -1,0 +1,73 @@
+{
+	"RupeeReplacer": {
+		"Rupee":		"Rubin",
+		"Rupees":		"Rubine",
+		"rupee":		"rubin",
+		"rupees":		"rubine",
+		
+		"CopperRupee":		"{$Rupee.Copper} {$Rupee.Rupee}",
+		"SilverRupee":		"{$Rupee.Silver} {$Rupee.Rupee}",
+		"GoldRupee":		"{$Rupee.Gold} {$Rupee.Rupee}",
+		"PlatinumRupee":	"{$Rupee.Platinum} {$Rupee.Rupee}"
+	},
+	"RupeeColors": {
+		"Green":	"Grün",
+		"Blue":		"Blau",
+		"Yellow":	"Gelb",
+		"Red":		"Rot",
+		"Purple":	"Violett",
+		"Orange":	"Orange",
+		"Silver":	"Silber",
+		"Gold":		"Gold",
+		
+		"green":	"grün",
+		"blue":		"blau",
+		"yellow":	"gelb",
+		"red":		"rot",
+		"purple":	"violett",
+		"orange":	"orange",
+		"silver":	"silber",
+		"gold":		"gold"
+	},
+	
+	"ItemName": {
+		"LuckyCoin":	"Glücks{$Rupee.rupee}",
+		"CoinGun":		"{$Rupee.Rupee}pistole",
+		"CoinRing":		"{$Rupee.Rupee}ring"
+	},
+	"ItemTooltip": {
+		"LuckyCoin":	"Angegriffene Gegner lassen mehr {$Rupee.Rupees} fallen",
+		"CoinGun":		"Verwendet {$Rupee.Rupees} als Munition\nHöherwertige {$Rupee.Rupees} richten mehr Schaden an",
+		"CoinRing": 	"Erhöht {$Rupee.Rupees}sammelreichweite\nAngegriffene Gegner lassen mehr {$Rupee.Rupees} fallen",
+		"GoldRing":		"Erhöht {$Rupee.Rupees}sammelreichweite",
+		"GreedyRing":	"Erhöht {$Rupee.Rupees}sammelreichweite und Läden haben bessere Preise\nAngegriffene Gegner lassen mehr {$Rupee.Rupees} fallen"
+	},
+	
+	"ProjectileName": {
+		"CoinPortal":	"{$Rupee.Rupees}portal",
+		
+		"CopperCoin":	"{$Rupee.CopperRupee}",
+		"SilverCoin":	"{$Rupee.SilverRupee}",
+		"GoldCoin":		"{$Rupee.GoldRupee}",
+		"PlatinumCoin":	"{$Rupee.PlatinumRupee}",
+		
+		"CopperCoinsFalling":	"{$Rupee.CopperRupee}",
+		"SilverCoinsFalling":	"{$Rupee.SilverRupee}",
+		"GoldCoinsFalling":		"{$Rupee.GoldRupee}",
+		"PlatinumCoinsFalling": "{$Rupee.PlatinumRupee}"
+	},
+	
+	"LegacyInterface": {
+		"26":	"{$Rupee.Rupees}"
+	},
+	"LegacyDialog": {
+		"148":	"Möchtest du, dass ich eine {$Rupees.Rupee} hinter deinem Ohr hervorziehe? Nein? Gut.",
+		"195":	"Wenn du willst, dass ein Händler einzieht, brauchst du eine Menge Geld. 50 {$Rupee.Silver} {$Rupee.Rupees} sollten aber reichen.",
+		"391":	"Ach, dann sehe ich wohl wie ein {$Rupee.Rupees}schild aus, was? Denn jedes Mal, wenn du mich siehst, willst du welche von mir.",
+		"393":	"Bäh! Du schon wieder? Du hast dir doch grad schon meine {$Rupee.Rupees} geschnappt. Jetzt hau ab und komm später wieder!"
+	},
+	
+	"AnglerQuestText": {
+		"Quest_TropicalBarracuda": "Piranhas und Haie sind hässlich! Soooo hässlich! Wusstest du, dass es einen Fisch gibt, der wunderschön aussieht, und der dir trotzdem das Gesicht wegfressen kann? Ich würde übrigens 2 {$Rupee.Platinum} {$Rupee.Rupees} springen lassen, um das zu sehen ... Wie auch immer, du gehst einen für mich fangen. Sorg nur dafür, dass ich ihn habe, bevor du dein Gesicht verlierst!\n\n(Auf der Dschungel-Oberfläche gefangen)"
+	}
+}
