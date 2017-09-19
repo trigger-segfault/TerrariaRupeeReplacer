@@ -7,10 +7,23 @@ using System.Linq;
 using System.Resources;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 using TerrariaRupeeReplacer.Properties;
 using TerrariaRupeeReplacer.Xnb;
 
 namespace TerrariaRupeeReplacer.Patching {
+	/**<summary>The available rupee colors.</summary>*/
+	public enum RupeeColors {
+		Green,
+		Blue,
+		Yellow,
+		Red,
+		Purple,
+		Orange,
+		Silver,
+		Gold
+	}
+
 	/**<summary>The class for patching content.</summary>*/
 	public static class ContentReplacer {
 		//============ ENUMS =============
@@ -127,6 +140,119 @@ namespace TerrariaRupeeReplacer.Patching {
 
 		#endregion
 		//--------------------------------
+		#endregion
+		//============ CONFIG ============
+		#region Config
+
+		/**<summary>Loads the current rupee configuration in Terraria.</summary>*/
+		public static void LoadXmlConfiguration() {
+			try {
+				string configPath = Path.Combine(Patcher.ExeDirectory, CoinReplacer.ConfigName);
+
+				XmlDocument doc = new XmlDocument();
+				XmlNode node;
+				XmlAttribute attribute;
+
+				doc.Load(configPath);
+
+				RupeeColors rupeeValue;
+				bool boolValue;
+
+				node = doc.SelectSingleNode("/RupeeReplacer/CopperCoin");
+				attribute = (node != null ? node.Attributes["Color"] : null);
+				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
+					Copper = rupeeValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/SilverCoin");
+				attribute = (node != null ? node.Attributes["Color"] : null);
+				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
+					Silver = rupeeValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/GoldCoin");
+				attribute = (node != null ? node.Attributes["Color"] : null);
+				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
+					Gold = rupeeValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/PlatinumCoin");
+				attribute = (node != null ? node.Attributes["Color"] : null);
+				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
+					Platinum = rupeeValue;
+				}
+
+				node = doc.SelectSingleNode("/RupeeReplacer/CoinGun");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
+					CoinGun = boolValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/LuckyCoin");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
+					LuckyCoin = boolValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/CoinRing");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
+					CoinRing = boolValue;
+				}
+				node = doc.SelectSingleNode("/RupeeReplacer/CoinPortal");
+				attribute = (node != null ? node.Attributes["Enabled"] : null);
+				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
+					CoinPortal = boolValue;
+				}
+			}
+			catch { }
+		}
+		/**<summary>Saves the xml to be modified for use in Terraria.</summary>*/
+		public static void SaveXmlConfiguration() {
+			try {
+				string configPath = Path.Combine(Patcher.ExeDirectory, CoinReplacer.ConfigName);
+
+				XmlDocument doc = new XmlDocument();
+				doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
+
+				XmlElement replacer = doc.CreateElement("RupeeReplacer");
+				doc.AppendChild(replacer);
+
+				XmlElement element = doc.CreateElement("CopperCoin");
+				element.SetAttribute("Color", Copper.ToString());
+				replacer.AppendChild(element);
+
+				element = doc.CreateElement("SilverCoin");
+				element.SetAttribute("Color", Silver.ToString());
+				replacer.AppendChild(element);
+
+				element = doc.CreateElement("GoldCoin");
+				element.SetAttribute("Color", Gold.ToString());
+				replacer.AppendChild(element);
+
+				element = doc.CreateElement("PlatinumCoin");
+				element.SetAttribute("Color", Platinum.ToString());
+				replacer.AppendChild(element);
+
+
+				element = doc.CreateElement("CoinGun");
+				element.SetAttribute("Enabled", CoinGun.ToString());
+				replacer.AppendChild(element);
+
+				element = doc.CreateElement("LuckyCoin");
+				element.SetAttribute("Enabled", LuckyCoin.ToString());
+				replacer.AppendChild(element);
+
+				element = doc.CreateElement("CoinRing");
+				element.SetAttribute("Enabled", CoinRing.ToString());
+				replacer.AppendChild(element);
+
+				element = doc.CreateElement("CoinPortal");
+				element.SetAttribute("Enabled", CoinPortal.ToString());
+				replacer.AppendChild(element);
+
+				doc.Save(configPath);
+			}
+			catch (Exception ex) {
+				throw new Exception("Failed to save " + CoinReplacer.ConfigName, ex);
+			}
+		}
+
 		#endregion
 		//========== REPLACING ===========
 		#region Replacing

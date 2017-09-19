@@ -17,9 +17,13 @@ namespace TerrariaRupeeReplacer.Patching {
 	public class PatcherException : Exception {
 		public PatcherException(string message) : base(message) { }
 	}
+	/**<summary>An exception thrown when the executable has already been patched.</summary>*/
+	public class AlreadyPatchedException : Exception {
+		public AlreadyPatchedException() : base("This executable has already been patched!") { }
+	}
 
 	/**<summary>The class for handling modification to the Terraria executable.</summary>*/
-	public static class Patcher {
+	public class Patcher {
 		//========== CONSTANTS ===========
 		#region Constants
 
@@ -27,7 +31,22 @@ namespace TerrariaRupeeReplacer.Patching {
 		public static readonly string[] RequireFiles = {
 			"RupeeReplacer.dll"
 		};
+		/**<summary>The collection of localization files.</summary>*/
+		public static readonly Dictionary<string, byte[]> LocalizationFiles = new Dictionary<string, byte[]>() {
+			{ "de-DE",   Resources.Terraria_Localization_Content_de_DE_RupeeReplacer   },
+			{ "en-US",   Resources.Terraria_Localization_Content_en_US_RupeeReplacer   },
+			{ "es-ES",   Resources.Terraria_Localization_Content_es_ES_RupeeReplacer   },
+			{ "fr-FR",   Resources.Terraria_Localization_Content_fr_FR_RupeeReplacer   },
+			{ "it-IT",   Resources.Terraria_Localization_Content_it_IT_RupeeReplacer   },
+			{ "pl-PL",   Resources.Terraria_Localization_Content_pl_PL_RupeeReplacer   },
+			{ "pt-BR",   Resources.Terraria_Localization_Content_pt_BR_RupeeReplacer   },
+			{ "ru-RU",   Resources.Terraria_Localization_Content_ru_RU_RupeeReplacer   },
+			{ "zh-Hans", Resources.Terraria_Localization_Content_zh_Hans_RupeeReplacer }
+		};
 
+		/**<summary>The name of the static field used to signal the exe has been patched.</summary>*/
+		public const string AlreadyPatchedStaticField = "TriggersRupeeReplacer";
+		
 		#endregion
 		//========== PROPERTIES ==========
 		#region Properties
@@ -60,14 +79,10 @@ namespace TerrariaRupeeReplacer.Patching {
 
 		/**<summary>The Terraria.Main type.</summary>*/
 		private static TypeDefinition Main;
-		/**<summary>The Terraria.Item type.</summary>*/
-		private static TypeDefinition Item;
 		/**<summary>The Terraria.ItemText type.</summary>*/
 		private static TypeDefinition ItemText;
 		/**<summary>The Terraria.Dust type.</summary>*/
 		private static TypeDefinition Dust;
-		/**<summary>The Terraria.Light type.</summary>*/
-		private static TypeDefinition Lighting;
 		/**<summary>The Terraria.Localization.LanguageManager type.</summary>*/
 		private static TypeDefinition LanguageManager;
 
@@ -78,11 +93,16 @@ namespace TerrariaRupeeReplacer.Patching {
 		//=========== PATCHING ===========
 		#region Patching
 		//--------------------------------
-		#region Main
-			
+		#region Patch & Restore
+
 		/**<summary>Restores the Terraria backup.</summary>*/
-		public static void Restore() {
+		public static void Restore(bool removeFiles) {
 			File.Copy(BackupPath, ExePath, true);
+
+			if (removeFiles) {
+				RemoveRequiredFiles();
+				RemoveLocalizationFiles();
+			}
 		}
 		/**<summary>Patches the Terraria executable.</summary>*/
 		public static void Patch() {
@@ -95,19 +115,26 @@ namespace TerrariaRupeeReplacer.Patching {
 			AsmDefinition = AssemblyDefinition.ReadAssembly(ExePath);
 			ModDefinition = AsmDefinition.MainModule;
 
-			// Get links to Terraria types
+			// Get links to Terraria types that will have their functions modified
 			Main = IL.GetTypeDefinition(ModDefinition, "Main");
 			Dust = IL.GetTypeDefinition(ModDefinition, "Dust");
-			Item = IL.GetTypeDefinition(ModDefinition, "Item");
 			ItemText = IL.GetTypeDefinition(ModDefinition, "ItemText");
-			Lighting = IL.GetTypeDefinition(ModDefinition, "Lighting");
 			LanguageManager = IL.GetTypeDefinition(ModDefinition, "LanguageManager");
-			
-			// Get links to CoinReplacer functions
+
+			// Get link and import CoinReplacer type
 			CoinReplacer = ModDefinition.Import(typeof(CoinReplacer)).Resolve();
+			
+			// Check if we've already been patched
+			if (IL.GetFieldDefinition(Main, AlreadyPatchedStaticField, false) != null)
+				throw new AlreadyPatchedException();
+
+			// Add a static field to let us know this exe has already been patched
+			var objectType = IL.GetTypeReference(ModDefinition, "System.Object");
+			IL.AddStaticField(Main, AlreadyPatchedStaticField, objectType);
 			
 			// Patch Terraria
 			Patch_Main_DrawInventory();
+			Patch_Main_GUIChatDrawInner();
 			Patch_Main_MouseText_DrawItemTooltip();
 			Patch_Main_ValueToCoins();
 
@@ -125,12 +152,17 @@ namespace TerrariaRupeeReplacer.Patching {
 			CopyRequiredFiles();
 			CopyLocalizationFiles();
 		}
+
+		#endregion
+		//--------------------------------
+		#region Required Files
+
 		/**<summary>Copies the required dlls and files to the Terraria folder.</summary>*/
 		private static void CopyRequiredFiles() {
 			try {
-				foreach (string dll in RequireFiles) {
-					string source = Path.Combine(AppDirectory, dll);
-					string destination = Path.Combine(ExeDirectory, dll);
+				foreach (string file in RequireFiles) {
+					string source = Path.Combine(AppDirectory, file);
+					string destination = Path.Combine(ExeDirectory, file);
 					File.Copy(source, destination, true);
 				}
 			}
@@ -138,39 +170,72 @@ namespace TerrariaRupeeReplacer.Patching {
 				throw new IOException("Error while trying to copy over required files.", ex);
 			}
 		}
+		/**<summary>Removes all required dlls and files from the Terraria folder.</summary>*/
+		private static void RemoveRequiredFiles() {
+			try {
+				foreach (string file in RequireFiles) {
+					string path = Path.Combine(ExeDirectory, file);
+					if (File.Exists(path))
+						File.Delete(path);
+				}
+			}
+			catch {
+				// Oh well, no harm done if we don't remove these
+			}
+		}
 		/**<summary>Copies over localization files.</summary>*/
 		public static void CopyLocalizationFiles() {
-			/*string localizationPath = Path.Combine(ExeDirectory, "Localization");
-			string[] resources = Assembly.GetExecutingAssembly().GetManifestResourceNames();
-			ResourceManager rm = new ResourceManager("TerrariaRupeeReplacer.Properties.Resources", typeof(Resources).Assembly);
-			var resourceSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
-			foreach (DictionaryEntry r in resourceSet) {
-				string key = r.Key.ToString();
-				Console.WriteLine(key);
-				string name = Path.GetFileName(key);
-				if (name.StartsWith("Terraria.Localization.Content.") && name.EndsWith(".json")) {
-					string path = Path.Combine(localizationPath, name);
-					byte[] data = (byte[])r.Value;
-					File.WriteAllBytes(path, data);
+			try {
+				string localizationPath = Path.Combine(ExeDirectory, "Localization");
+				if (!Directory.Exists(localizationPath))
+					Directory.CreateDirectory(localizationPath);
+				foreach (var pair in LocalizationFiles) {
+					string path = Path.Combine(localizationPath, "Terraria.Localization.Content." + pair.Key + ".RupeeReplacer.json");
+					File.WriteAllBytes(path, pair.Value);
 				}
-			}*/
-			string localizationPath = Path.Combine(ExeDirectory, "Localization");
-			if (!Directory.Exists(localizationPath))
-				Directory.CreateDirectory(localizationPath);
-			WriteLocalization("de-DE", Resources.Terraria_Localization_Content_de_DE_RupeeReplacer);
-			WriteLocalization("en-US", Resources.Terraria_Localization_Content_en_US_RupeeReplacer);
-			WriteLocalization("es-ES", Resources.Terraria_Localization_Content_es_ES_RupeeReplacer);
-			WriteLocalization("fr-FR", Resources.Terraria_Localization_Content_fr_FR_RupeeReplacer);
-			WriteLocalization("it-IT", Resources.Terraria_Localization_Content_it_IT_RupeeReplacer);
-			WriteLocalization("pl-PL", Resources.Terraria_Localization_Content_pl_PL_RupeeReplacer);
-			WriteLocalization("pt-BR", Resources.Terraria_Localization_Content_pt_BR_RupeeReplacer);
-			WriteLocalization("ru-RU", Resources.Terraria_Localization_Content_ru_RU_RupeeReplacer);
-			WriteLocalization("zh-Hans", Resources.Terraria_Localization_Content_zh_Hans_RupeeReplacer);
+			}
+			catch (Exception ex) {
+				throw new IOException("Error while trying to copy over localization files.", ex);
+			}
 		}
-		private static void WriteLocalization(string culture, byte[] data) {
-			string localizationPath = Path.Combine(ExeDirectory, "Localization");
-			string path = Path.Combine(localizationPath, "Terraria.Localization.Content." + culture + ".RupeeReplacer.json");
-			File.WriteAllBytes(path, data);
+		/**<summary>Removes all localization files.</summary>*/
+		public static void RemoveLocalizationFiles() {
+			try {
+				string localizationPath = Path.Combine(ExeDirectory, "Localization");
+
+				foreach (var pair in LocalizationFiles) {
+					string path = Path.Combine(localizationPath, "Terraria.Localization.Content." + pair.Key + ".RupeeReplacer.json");
+					if (File.Exists(path))
+						File.Delete(path);
+				}
+
+				// Remove Localizations folder if empty
+				if (!Directory.EnumerateFileSystemEntries(localizationPath).Any())
+					Directory.Delete(localizationPath);
+			}
+			catch {
+				// Oh well, no harm done if we don't remove these
+			}
+		}
+
+		#endregion
+		//--------------------------------
+		#region Exception Throwing
+
+		/**<summary>Performs a check to see if the starting point was found. Throws an exception otherwise.</summary>*/
+		private static void CheckFailedToFindStart(int start, int index, string function) {
+			if (start == -1)
+				throw new PatcherException("Failed to find starting point '" + (index + 1) + "' for " + function);
+		}
+		/**<summary>Performs a check to see if the ending point was found. Throws an exception otherwise.</summary>*/
+		private static void CheckFailedToFindEnd(int end, int index, string function) {
+			if (end == -1)
+				throw new PatcherException("Failed to find ending point '" + (index + 1) + "' for " + function);
+		}
+		/**<summary>Performs a check to see if the local variable was found. Throws an exception otherwise.</summary>*/
+		private static void CheckFailedToFindVariable(VariableDefinition varDef, string varName, string function) {
+			if (varDef == null)
+				throw new PatcherException("Failed to find local variable '" + varName + "' for " + function);
 		}
 
 		#endregion
@@ -179,107 +244,283 @@ namespace TerrariaRupeeReplacer.Patching {
 
 		/**<summary>Patches reforge cost text.</summary>*/
 		private static void Patch_Main_DrawInventory() {
+			string functionName = "Terraria.Main.DrawInventory";
+
 			var drawInventory = IL.GetMethodDefinition(Main, "DrawInventory", 0);
-			var mainSpriteBatch = IL.GetFieldDefinition(Main, "spriteBatch");
-			var mainInvBottom = IL.GetFieldDefinition(Main, "invBottom");
-
 			var onReforgeCost = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnReforgeCost"));
+			
+			var checks = new IL.OperandCheck[] {
+				IL.CheckField(OpCodes.Ldsfld, "Main::reforgeItem"),
+				IL.CheckField(OpCodes.Ldfld, "Item::type"),
+				IL.Check(OpCodes.Ldc_I4_0),
+				IL.Check(OpCodes.Ble),
+				IL.CheckField(OpCodes.Ldsfld, "Main::reforgeItem"),
+				IL.CheckField(OpCodes.Ldfld, "Item::value"),
+				IL.VarCheck(LocOpCodes.Stloc),
+				IL.CheckField(OpCodes.Ldsfld, "Main::player"),
+				IL.CheckField(OpCodes.Ldsfld, "Main::myPlayer"),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckField(OpCodes.Ldfld, "Player::discount"),
+				IL.Check(OpCodes.Brfalse_S),
+				IL.CheckSkipIndefinite(),
+				IL.VarCheck(LocOpCodes.Stloc),
+				IL.Check(OpCodes.Ldstr, ""),
+				IL.Check(LocOpCodes.Stloc)
+			};
 
-			int start = IL.ScanForInstructionPattern(drawInventory,
-				new ILCheck(OpCodes.Ldstr, ""),
-				new ILCheck(OpCodes.Stloc_S, drawInventory.Body.Variables[IsTMod ? 111 : 102]),
-				new ILCheck(OpCodes.Ldc_I4_0)
+			int start = IL.ScanForInstructionPatternEnd(drawInventory, checks);
+			CheckFailedToFindStart(start, 0, functionName);
+
+			var num60 = IL.ScanForVariablePattern(drawInventory, checks);
+			CheckFailedToFindVariable(num60, "num60", functionName);
+			
+			var text3 = IL.ScanForVariablePattern(drawInventory, start - 2,
+				IL.Check(OpCodes.Ldstr, ""),
+				IL.VarCheck(LocOpCodes.Stloc)
 			);
-			if (start == -1)
-				throw new PatcherException("Failed to find starting point for Terraria.Main.DrawInventory");
+			CheckFailedToFindVariable(text3, "text3", functionName);
+
 			int end = IL.ScanForInstructionPattern(drawInventory, start,
-				new ILCheck(OpCodes.Ldsfld, mainSpriteBatch),
-				new ILCheck(OpCodes.Ldloc_S, drawInventory.Body.Variables[IsTMod ? 107 : 98]),
-				new ILCheck(OpCodes.Ldc_I4, 130),
-				new ILCheck(OpCodes.Add),
-				new ILCheck(OpCodes.Conv_R4),
-				new ILCheck(OpCodes.Ldarg_0),
-				new ILCheck(OpCodes.Ldfld, mainInvBottom),
-				new ILCheck(OpCodes.Conv_R4),
-				new ILCheck(OpCodes.Ldc_I4_1),
-				new ILCheck(OpCodes.Call)
+				IL.CheckField(OpCodes.Ldsfld, "Main::spriteBatch"),
+				IL.Check(LocOpCodes.Ldloc),
+				IL.Check(OpCodes.Ldc_I4, 130),
+				IL.Check(OpCodes.Add),
+				IL.Check(OpCodes.Conv_R4),
+				IL.Check(OpCodes.Ldarg_0),
+				IL.CheckField(OpCodes.Ldfld, "Main::invBottom"),
+				IL.Check(OpCodes.Conv_R4),
+				IL.Check(OpCodes.Ldc_I4_1),
+				IL.CheckMethod(OpCodes.Call, "ItemSlot::DrawSavings")
 			);
-			if (end == -1)
-				throw new PatcherException("Failed to find ending point for Terraria.Main.DrawInventory");
-			var il = drawInventory.Body.GetILProcessor();
-			for (int i = start; i < end; i++) {
-				il.Body.Instructions.RemoveAt(start);
-			}
-			IL.MethodInsert(drawInventory, start, new[] {
-				Instruction.Create(OpCodes.Ldloc_S, drawInventory.Body.Variables[IsTMod ? 110 : 101]),
+			CheckFailedToFindEnd(end, 0, functionName);
+
+			IL.MethodReplace(drawInventory, start, end,
+				Instruction.Create(OpCodes.Ldloc_S, num60),
 				Instruction.Create(OpCodes.Call, onReforgeCost),
-				Instruction.Create(OpCodes.Stloc_S, drawInventory.Body.Variables[IsTMod ? 111 : 102])
-			});
+				Instruction.Create(OpCodes.Stloc_S, text3)
+			);
+		}
+		/**<summary>Patches heal cost tax collect text.</summary>*/
+		private static void Patch_Main_GUIChatDrawInner() {
+			string functionName = "Terraria.Main.GUIChatDrawInner";
+
+			var guiChatDrawInner = IL.GetMethodDefinition(Main, "GUIChatDrawInner", 0);
+			var onTaxCollect = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnTaxCollect"));
+			var onNurseHeal = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnNurseHeal"));
+
+			var focusText = IL.ScanForVariablePattern(guiChatDrawInner,
+				IL.CheckField(OpCodes.Ldsfld, "Main::player"),
+				IL.CheckField(OpCodes.Ldsfld, "Main::myPlayer"),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckField(OpCodes.Ldfld, "Player::sign"),
+				IL.Check(OpCodes.Ldc_I4_M1),
+				IL.Check(OpCodes.Ble_S),
+				IL.CheckField(OpCodes.Ldsfld, "Main::editSign"),
+				IL.Check(OpCodes.Brfalse_S),
+				IL.CheckField(OpCodes.Ldsfld, "Lang::inter"),
+				IL.Check(OpCodes.Ldc_I4_S, (sbyte)47),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckMethod(OpCodes.Callvirt, "LocalizedText::get_Value"),
+				IL.VarCheck(LocOpCodes.Stloc),
+				IL.Check(OpCodes.Br),
+				IL.CheckField(OpCodes.Ldsfld, "Lang::inter"),
+				IL.Check(OpCodes.Ldc_I4_S, (sbyte)48),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckMethod(OpCodes.Callvirt, "LocalizedText::get_Value"),
+				IL.VarCheck(LocOpCodes.Stloc),
+				IL.Check(OpCodes.Br)
+			);
+			CheckFailedToFindVariable(focusText, "focusText", functionName);
+
+			var color2 = IL.ScanForVariablePattern(guiChatDrawInner,
+				IL.CheckField(OpCodes.Ldsfld, "Main::mouseTextColor"),
+				IL.Check(OpCodes.Ldc_I4_2),
+				IL.Check(OpCodes.Mul),
+				IL.Check(OpCodes.Ldc_I4, (int)255),
+				IL.Check(OpCodes.Add),
+				IL.Check(OpCodes.Ldc_I4_3),
+				IL.Check(OpCodes.Div),
+				IL.Check(LocOpCodes.Stloc),
+				IL.VarCheck(LocOpCodes.Ldloca),
+				IL.Check(LocOpCodes.Ldloc),
+				IL.CheckRepeat(3),
+				IL.CheckMethod(OpCodes.Call, "Color::.ctor")
+			);
+			CheckFailedToFindVariable(color2, "color2", functionName);
+
+			var num6 = IL.ScanForVariablePattern(guiChatDrawInner,
+				IL.CheckField(OpCodes.Ldsfld, "Main::player"),
+				IL.CheckField(OpCodes.Ldsfld, "Main::myPlayer"),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckField(OpCodes.Ldfld, "Player::statLifeMax2"),
+				IL.CheckField(OpCodes.Ldsfld, "Main::player"),
+				IL.CheckField(OpCodes.Ldsfld, "Main::myPlayer"),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckField(OpCodes.Ldfld, "Player::statLife"),
+				IL.Check(OpCodes.Sub),
+				IL.VarCheck(LocOpCodes.Stloc)
+			);
+			CheckFailedToFindVariable(num6, "num6", functionName);
+
+			int start = IL.ScanForInstructionPatternEnd(guiChatDrawInner,
+				IL.CheckField(OpCodes.Ldsfld, "Main::player"),
+				IL.CheckField(OpCodes.Ldsfld, "Main::myPlayer"),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckField(OpCodes.Ldfld, "Player::taxMoney"),
+				IL.Check(OpCodes.Ldc_I4_0),
+				IL.Check(OpCodes.Bgt_S),
+				IL.CheckField(OpCodes.Ldsfld, "Lang::inter"),
+				IL.Check(OpCodes.Ldc_I4_S, (sbyte)89),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckMethod(OpCodes.Callvirt, "LocalizedText::get_Value"),
+				IL.Check(LocOpCodes.Stloc, focusText),
+				IL.Check(OpCodes.Br)
+			);
+			CheckFailedToFindStart(start, 0, functionName);
+
+			int end = IL.ScanForInstructionPatternEnd(guiChatDrawInner, start,
+				IL.CheckField(OpCodes.Ldsfld, "Lang::inter"),
+				IL.Check(OpCodes.Ldc_I4_S, (sbyte)89),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckMethod(OpCodes.Callvirt, "LocalizedText::get_Value"),
+				IL.Check(OpCodes.Ldstr, " ("),
+				IL.Check(LocOpCodes.Ldloc),
+				IL.Check(OpCodes.Ldstr, ")"),
+				IL.CheckMethod(OpCodes.Call, "String::Concat"),
+				IL.Check(LocOpCodes.Stloc, focusText)
+			);
+			CheckFailedToFindEnd(end, 0, functionName);
+
+			end = IL.MethodReplace(guiChatDrawInner, start, end,
+				Instruction.Create(OpCodes.Ldloca_S, focusText),
+				Instruction.Create(OpCodes.Ldloca_S, color2),
+				Instruction.Create(OpCodes.Ldloca_S, num6),
+				Instruction.Create(OpCodes.Call, onTaxCollect)
+			);
+
+			start = IL.ScanForInstructionPatternEnd(guiChatDrawInner, end,
+				IL.CheckField(OpCodes.Ldsfld, "Main::npc"),
+				IL.CheckField(OpCodes.Ldsfld, "Main::player"),
+				IL.CheckField(OpCodes.Ldsfld, "Main::myPlayer"),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckField(OpCodes.Ldfld, "Player::talkNPC"),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckField(OpCodes.Ldfld, "NPC::type"),
+				IL.Check(OpCodes.Ldc_I4_S, (sbyte)18),
+				IL.Check(OpCodes.Bne_Un)
+			);
+			CheckFailedToFindStart(start, 1, functionName);
+
+			end = IL.ScanForInstructionPatternEnd(guiChatDrawInner, start,
+				IL.CheckField(OpCodes.Ldsfld, "Lang::inter"),
+				IL.Check(OpCodes.Ldc_I4_S, (sbyte)54),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckMethod(OpCodes.Callvirt, "LocalizedText::get_Value"),
+				IL.Check(OpCodes.Ldstr, " ("),
+				IL.Check(LocOpCodes.Ldloc),
+				IL.Check(OpCodes.Ldstr, ")"),
+				IL.CheckMethod(OpCodes.Call, "String::Concat"),
+				IL.Check(LocOpCodes.Stloc, focusText)
+			);
+			CheckFailedToFindEnd(end, 1, functionName);
+
+			IL.MethodReplace(guiChatDrawInner, start, end,
+				Instruction.Create(OpCodes.Ldloca_S, focusText),
+				Instruction.Create(OpCodes.Ldloca_S, color2),
+				Instruction.Create(OpCodes.Ldloca_S, num6),
+				Instruction.Create(OpCodes.Call, onNurseHeal)
+			);
 		}
 		/**<summary>Patches store buy and sell price text.</summary>*/
 		private static void Patch_Main_MouseText_DrawItemTooltip() {
+			string functionName = "Terraria.Main.MouseText_DrawItemTooltip";
+
 			var mouseText_DrawItemTooltip = IL.GetMethodDefinition(Main, "MouseText_DrawItemTooltip", 4);
-			var getStoreValue = IL.GetMethodDefinition(Item, "GetStoreValue", 0);
+			var onNPCShopPrice = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnNPCShopPrice"));
 
-			var onCoinStoreValue = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnCoinStoreValue"));
-
-			int start = IL.ScanForInstructionPattern(mouseText_DrawItemTooltip,
-				new ILCheck(OpCodes.Ldsfld),
-				new ILCheck(OpCodes.Callvirt, getStoreValue),
-				new ILCheck(OpCodes.Ldc_I4_0),
-				new ILCheck(OpCodes.Ble)
+			var storeValue = IL.ScanForVariablePattern(mouseText_DrawItemTooltip,
+				IL.CheckField(OpCodes.Ldsfld, "Main::npcShop"),
+				IL.Check(OpCodes.Ldc_I4_0),
+				IL.Check(OpCodes.Ble),
+				IL.CheckField(OpCodes.Ldsfld, "Main::HoverItem"),
+				IL.CheckMethod(OpCodes.Callvirt, "Item::GetStoreValue"),
+				IL.VarCheck(LocOpCodes.Stloc)
 			);
-			if (start == -1)
-				throw new PatcherException("Failed to find starting point for Terraria.Main.MouseText_DrawItemTooltip");
-			start += 4;
-			int end = IL.ScanForInstructionPattern(mouseText_DrawItemTooltip, start,
-				new ILCheck(OpCodes.Ldc_R4, 246f),
-				new ILCheck(OpCodes.Ldloc_S, mouseText_DrawItemTooltip.Body.Variables[IsTMod ? 11 : 9]),
-				new ILCheck(OpCodes.Mul),
-				new ILCheck(OpCodes.Conv_U1),
+			CheckFailedToFindVariable(storeValue, "storeValue", functionName);
 
-				new ILCheck(OpCodes.Ldc_R4, 138f),
-				new ILCheck(OpCodes.Ldloc_S, mouseText_DrawItemTooltip.Body.Variables[IsTMod ? 11 : 9]),
-				new ILCheck(OpCodes.Mul),
-				new ILCheck(OpCodes.Conv_U1),
-
-				new ILCheck(OpCodes.Ldc_R4, 96f),
-				new ILCheck(OpCodes.Ldloc_S, mouseText_DrawItemTooltip.Body.Variables[IsTMod ? 11 : 9]),
-				new ILCheck(OpCodes.Mul),
-				new ILCheck(OpCodes.Conv_U1),
-
-				new ILCheck(OpCodes.Ldloc_S, mouseText_DrawItemTooltip.Body.Variables[IsTMod ? 12 : 10]),
-				new ILCheck(OpCodes.Call)
+			int start = IL.ScanForInstructionPatternEnd(mouseText_DrawItemTooltip,
+				IL.Check(OpCodes.Ldsfld),
+				IL.CheckMethod(OpCodes.Callvirt, "Item::GetStoreValue"),
+				IL.Check(OpCodes.Ldc_I4_0),
+				IL.Check(OpCodes.Ble)
 			);
-			if (end == -1)
-				throw new PatcherException("Failed to find ending point for Terraria.Main.MouseText_DrawItemTooltip");
-			end += 14;
-			var il = mouseText_DrawItemTooltip.Body.GetILProcessor();
-			for (int i = start; i < end; i++) {
-				il.Body.Instructions.RemoveAt(start);
-			}
-			IL.MethodInsert(mouseText_DrawItemTooltip, start, new[] {
-				Instruction.Create(OpCodes.Ldloc_0),
-				Instruction.Create(OpCodes.Ldloc_S, mouseText_DrawItemTooltip.Body.Variables[5]),
-				Instruction.Create(OpCodes.Ldloc_S, mouseText_DrawItemTooltip.Body.Variables[6]),
-				Instruction.Create(OpCodes.Ldloc_S, mouseText_DrawItemTooltip.Body.Variables[IsTMod ? 56 : 33]),
-				Instruction.Create(OpCodes.Call, onCoinStoreValue),
-				Instruction.Create(OpCodes.Stloc_0),
-				Instruction.Create(OpCodes.Ldloc_S, mouseText_DrawItemTooltip.Body.Variables[5]),
+			CheckFailedToFindStart(start, 0, functionName);
+
+			var array = IL.ScanForVariablePattern(mouseText_DrawItemTooltip, start,
+				IL.CheckField(OpCodes.Ldsfld, "Main::HoverItem"),
+				IL.CheckField(OpCodes.Ldfld, "Item::buy"),
+				IL.Check(OpCodes.Brtrue_S),
+				IL.VarCheck(LocOpCodes.Ldloc),
+				IL.Check(LocOpCodes.Ldloc),
+				IL.CheckField(OpCodes.Ldsfld, "Lang::tip")
+			);
+			CheckFailedToFindVariable(array, "array", functionName);
+			var num4 = IL.ScanForVariablePattern(mouseText_DrawItemTooltip, start,
+				IL.CheckField(OpCodes.Ldsfld, "Main::HoverItem"),
+				IL.CheckField(OpCodes.Ldfld, "Item::buy"),
+				IL.Check(OpCodes.Brtrue_S),
+				IL.Check(LocOpCodes.Ldloc),
+				IL.VarCheck(LocOpCodes.Ldloc),
+				IL.CheckField(OpCodes.Ldsfld, "Lang::tip")
+			);
+			CheckFailedToFindVariable(num4, "num4", functionName);
+
+			var checks = new IL.OperandCheck[] {
+				IL.VarCheck(LocOpCodes.Ldloca),
+				IL.Check(OpCodes.Ldc_R4, 246f),
+				IL.Check(LocOpCodes.Ldloc),
+				IL.Check(OpCodes.Mul),
+				IL.Check(OpCodes.Conv_U1),
+
+				IL.Check(OpCodes.Ldc_R4, 138f),
+				IL.Check(LocOpCodes.Ldloc),
+				IL.Check(OpCodes.Mul),
+				IL.Check(OpCodes.Conv_U1),
+
+				IL.Check(OpCodes.Ldc_R4, 96f),
+				IL.Check(LocOpCodes.Ldloc),
+				IL.Check(OpCodes.Mul),
+				IL.Check(OpCodes.Conv_U1),
+
+				IL.Check(LocOpCodes.Ldloc),
+				IL.CheckMethod(OpCodes.Call, "Color::.ctor")
+			};
+
+			var color = IL.ScanForVariablePattern(mouseText_DrawItemTooltip, start, checks);
+			CheckFailedToFindVariable(color, "color", functionName);
+
+			int end = IL.ScanForInstructionPatternEnd(mouseText_DrawItemTooltip, start, checks);
+			CheckFailedToFindEnd(end, 0, functionName);
+
+			IL.MethodReplace(mouseText_DrawItemTooltip, start, end,
+				Instruction.Create(OpCodes.Ldloc_S, color),
+				Instruction.Create(OpCodes.Ldloc_S, num4),
+				Instruction.Create(OpCodes.Ldloc_S, array),
+				Instruction.Create(OpCodes.Ldloc_S, storeValue),
+				Instruction.Create(OpCodes.Call, onNPCShopPrice),
+				Instruction.Create(OpCodes.Stloc_S, color),
+				Instruction.Create(OpCodes.Ldloc_S, num4),
 				Instruction.Create(OpCodes.Ldc_I4_1),
 				Instruction.Create(OpCodes.Add),
-				Instruction.Create(OpCodes.Stloc_S, mouseText_DrawItemTooltip.Body.Variables[5])
-			});
+				Instruction.Create(OpCodes.Stloc_S, num4)
+			);
 		}
 		/**<summary>Patches death coin drop text.</summary>*/
 		private static void Patch_Main_ValueToCoins() {
 			var valueToCoins = IL.GetMethodDefinition(Main, "ValueToCoins", 1);
-
 			var onValueToCoins = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnValueToCoins"));
-
-			var il = valueToCoins.Body.GetILProcessor();
-			il.Body.Instructions.Clear();
-			IL.MethodAppend(valueToCoins, new[] {
+			
+			IL.MethodReplace(valueToCoins, new[] {
 				Instruction.Create(OpCodes.Ldarg_0),
 				Instruction.Create(OpCodes.Call, onValueToCoins),
 				Instruction.Create(OpCodes.Ret)
@@ -287,153 +528,142 @@ namespace TerrariaRupeeReplacer.Patching {
 		}
 		/**<summary>Patches coin glowing when moving.</summary>*/
 		private static void Patch_Dust_UpdateDust() {
-			var dustType = IL.GetFieldDefinition(Dust, "type");
+			string functionName = "Terraria.Dust.UpdateDust";
+
 			var updateDust = IL.GetMethodDefinition(Dust, "UpdateDust", 0);
-			var addLight = IL.GetMethodDefinition(Lighting, "AddLight", 5);
+			var onCoinGlow = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnCoinGlow"));
 
-			var onCoinSparkle = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnCoinSparkle"));
+			var checks = new IL.OperandCheck[] {
+				IL.VarCheck(LocOpCodes.Ldloc),
+				IL.CheckField(OpCodes.Ldfld, "Dust::type"),
+				IL.Check(OpCodes.Ldc_I4, (int)244),
+				IL.Check(OpCodes.Blt),
+				IL.VarCheck(LocOpCodes.Ldloc),
+				IL.CheckField(OpCodes.Ldfld, "Dust::type"),
+				IL.Check(OpCodes.Ldc_I4, (int)247),
+				IL.Check(OpCodes.Bgt)
+			};
 
-			int start = IL.ScanForInstructionPattern(updateDust,
-				IsTMod ? new ILCheck(OpCodes.Ldloc_S, updateDust.Body.Variables[4]) : new ILCheck(OpCodes.Ldloc_3),
-				new ILCheck(OpCodes.Ldfld, dustType),
-				new ILCheck(OpCodes.Ldc_I4, (int)244),
-				new ILCheck(OpCodes.Blt),
-				IsTMod ? new ILCheck(OpCodes.Ldloc_S, updateDust.Body.Variables[4]) : new ILCheck(OpCodes.Ldloc_3),
-				new ILCheck(OpCodes.Ldfld, dustType),
-				new ILCheck(OpCodes.Ldc_I4, (int)247),
-				new ILCheck(OpCodes.Bgt)
+			int start = IL.ScanForInstructionPatternEnd(updateDust, checks);
+			CheckFailedToFindStart(start, 0, functionName);
+
+			var dust = IL.ScanForVariablePattern(updateDust, checks);
+			CheckFailedToFindVariable(dust, "dust", functionName);
+
+			int end = IL.ScanForInstructionPatternEnd(updateDust, start,
+				IL.CheckMethod(OpCodes.Call, "Lighting::AddLight")
 			);
-			if (start == -1)
-				throw new PatcherException("Failed to find starting point for Terraria.Dust.UpdateDust");
-			start += 8;
-			int end = IL.ScanForInstructionPattern(updateDust, start,
-				new ILCheck(OpCodes.Call, addLight)
+			CheckFailedToFindEnd(end, 0, functionName);
+			
+			IL.MethodReplace(updateDust, start, end,
+				Instruction.Create(OpCodes.Ldloc_S, dust),
+				Instruction.Create(OpCodes.Call, onCoinGlow)
 			);
-			if (end == -1)
-				throw new PatcherException("Failed to find ending point for Terraria.Dust.UpdateDust");
-			end += 1;
-
-			var il = updateDust.Body.GetILProcessor();
-			for (int i = start; i < end; i++)
-				il.Body.Instructions.RemoveAt(start);
-			IL.MethodInsert(updateDust, start, new[] {
-				Instruction.Create(OpCodes.Ldloc_3),
-				Instruction.Create(OpCodes.Call, onCoinSparkle)
-			});
 		}
 		/**<summary>Patches coin pickup text.</summary>*/
 		private static void Patch_ItemText_ValueToName() {
 			var valueToName = IL.GetMethodDefinition(ItemText, "ValueToName", false, 0);
-
 			var onValueToName = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnValueToName"));
-
-			var il = valueToName.Body.GetILProcessor();
-			il.Body.Instructions.Clear();
-			IL.MethodAppend(valueToName, new[] {
+			
+			IL.MethodReplace(valueToName,
 				Instruction.Create(OpCodes.Ldarg_0),
 				Instruction.Create(OpCodes.Call, onValueToName),
 				Instruction.Create(OpCodes.Ret)
-			});
+			);
 		}
 		/**<summary>Patches coin pickup text.</summary>*/
 		private static void Patch_ItemText_NewText() {
+			string functionName = "Terraria.ItemText.NewText";
+
 			var newText = IL.GetMethodDefinition(ItemText, "NewText", 4);
-			var coinText = IL.GetFieldDefinition(ItemText, "coinText");
-			var mainItemText = IL.GetFieldDefinition(Main, "itemText");
-
-			var onCoinText = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnCoinText"));
-			var onCoinText2 = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnCoinText2"));
+			var onCoinPickupText = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnCoinPickupText"));
+			var onCoinPickupText2 = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnCoinPickupText2"));
 			
-			int start = IL.ScanForNthInstructionPattern(newText, 1,
-				new ILCheck(OpCodes.Ldloc_0),
-				new ILCheck(OpCodes.Brfalse),
-				new ILCheck(OpCodes.Ldsfld, mainItemText),
-				new ILCheck(OpCodes.Ldloc_2),
-				new ILCheck(OpCodes.Ldelem_Ref),
-				new ILCheck(OpCodes.Ldfld, coinText),
-				new ILCheck(OpCodes.Brfalse)
-			);
-			if (start == -1)
-				throw new PatcherException("Failed to find first starting point for Terraria.ItemText.NewText");
-			start += 7;
-			int end = IL.ScanForInstructionPattern(newText, start,
-				new ILCheck(OpCodes.Ldc_I4, (int)246),
-				new ILCheck(OpCodes.Ldc_I4, (int)138),
-				new ILCheck(OpCodes.Ldc_I4_S, (sbyte)96),
-				new ILCheck(OpCodes.Newobj),
-				new ILCheck(OpCodes.Stfld)
-			);
-			if (end == -1)
-				throw new PatcherException("Failed to find first ending point for Terraria.ItemText.NewText");
-			end += 5;
-			var il = newText.Body.GetILProcessor();
-			for (int i = start; i < end; i++) {
-				il.Body.Instructions.RemoveAt(start);
-			}
-			IL.MethodInsert(newText, start, new[] {
-				Instruction.Create(OpCodes.Ldarg_0),
-				Instruction.Create(OpCodes.Ldloc_2),
-				Instruction.Create(OpCodes.Call, onCoinText),
-				Instruction.Create(OpCodes.Stloc_S, newText.Body.Variables[5])
-			});
+			var checks = new IL.OperandCheck[] {
+				IL.Check(LocOpCodes.Ldloc),
+				IL.Check(OpCodes.Brfalse),
+				IL.CheckField(OpCodes.Ldsfld, "Main::itemText"),
+				IL.VarCheck(LocOpCodes.Ldloc),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckField(OpCodes.Ldfld, "ItemText::coinText"),
+				IL.Check(OpCodes.Brfalse)
+			};
 
-			start = IL.ScanForInstructionPattern(newText, end + 5,
-				new ILCheck(OpCodes.Ldsfld, mainItemText),
-				new ILCheck(OpCodes.Ldloc_1),
-				new ILCheck(OpCodes.Ldelem_Ref),
-				new ILCheck(OpCodes.Ldfld, coinText),
-				new ILCheck(OpCodes.Brfalse)
-			);
-			if (start == -1)
-				throw new PatcherException("Failed to find second starting point for Terraria.ItemText.NewText");
-			start += 5;
-			end = IL.ScanForInstructionPattern(newText, start,
-				new ILCheck(OpCodes.Ldc_I4, (int)246),
-				new ILCheck(OpCodes.Ldc_I4, (int)138),
-				new ILCheck(OpCodes.Ldc_I4_S, (sbyte)96),
-				new ILCheck(OpCodes.Newobj),
-				new ILCheck(OpCodes.Stfld)
-			);
-			if (end == -1)
-				throw new PatcherException("Failed to find second ending point for Terraria.ItemText.NewText");
-			end += 5;
+			int start = IL.ScanForNthInstructionPatternEnd(newText, 1, checks);
+			CheckFailedToFindStart(start, 0, functionName);
 
-			for (int i = start; i < end; i++) {
-				il.Body.Instructions.RemoveAt(start);
-			}
-			IL.MethodInsert(newText, start, new[] {
+			var i = IL.ScanForNthVariablePattern(newText, 1, checks);
+			CheckFailedToFindVariable(i, "i", functionName);
+
+			var vector = IL.ScanForVariablePattern(newText, start,
+				IL.CheckField(OpCodes.Ldsfld, "Main::fontMouseText"),
+				IL.Check(LocOpCodes.Ldloc),
+				IL.CheckMethod(OpCodes.Callvirt, "DynamicSpriteFont::MeasureString"),
+				IL.VarCheck(LocOpCodes.Stloc)
+			);
+			CheckFailedToFindVariable(vector, "vector", functionName);
+
+			int end = IL.ScanForInstructionPatternEnd(newText, start,
+				IL.Check(OpCodes.Ldc_I4, (int)246),
+				IL.Check(OpCodes.Ldc_I4, (int)138),
+				IL.Check(OpCodes.Ldc_I4_S, (sbyte)96),
+				IL.Check(OpCodes.Newobj),
+				IL.Check(OpCodes.Stfld)
+			);
+			CheckFailedToFindEnd(end, 0, functionName);
+
+			IL.MethodReplace(newText, start, end, 
 				Instruction.Create(OpCodes.Ldarg_0),
-				Instruction.Create(OpCodes.Ldloc_1),
-				Instruction.Create(OpCodes.Call, onCoinText2)
-			});
+				Instruction.Create(OpCodes.Ldloc_S, i),
+				Instruction.Create(OpCodes.Call, onCoinPickupText),
+				Instruction.Create(OpCodes.Stloc_S, vector)
+			);
+
+			checks = new IL.OperandCheck[] {
+				IL.CheckField(OpCodes.Ldsfld, "Main::itemText"),
+				IL.VarCheck(LocOpCodes.Ldloc),
+				IL.Check(OpCodes.Ldelem_Ref),
+				IL.CheckField(OpCodes.Ldfld, "ItemText::coinText"),
+				IL.Check(OpCodes.Brfalse)
+			};
+
+			start = IL.ScanForInstructionPatternEnd(newText, end + 5, checks);
+			CheckFailedToFindStart(start, 1, functionName);
+
+			var num2 = IL.ScanForVariablePattern(newText, end + 5, checks);
+			CheckFailedToFindVariable(num2, "num2", functionName);
+
+			end = IL.ScanForInstructionPatternEnd(newText, start,
+				IL.Check(OpCodes.Ldc_I4, (int)246),
+				IL.Check(OpCodes.Ldc_I4, (int)138),
+				IL.Check(OpCodes.Ldc_I4_S, (sbyte)96),
+				IL.Check(OpCodes.Newobj),
+				IL.Check(OpCodes.Stfld)
+			);
+			CheckFailedToFindEnd(end, 1, functionName);
+			
+			IL.MethodReplace(newText, start, end, 
+				Instruction.Create(OpCodes.Ldarg_0),
+				Instruction.Create(OpCodes.Ldloc_S, num2),
+				Instruction.Create(OpCodes.Call, onCoinPickupText2)
+			);
 		}
 		/**<summary>Patches coin names.</summary>*/
 		private static void Patch_LanguageManager_LoadLanguage() {
+			string functionName = "Terraria.LanguageManager.LoadLanguage";
+
 			var loadLanguage = IL.GetMethodDefinition(LanguageManager, "LoadLanguage", 1);
-			var loadFilesForCulture = IL.GetMethodDefinition(LanguageManager, "LoadFilesForCulture", 1);
-			var _localizedTexts = IL.GetFieldDefinition(LanguageManager, "_localizedTexts");
-
-
-			//var onLoadCoinNames = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnLoadCoinNames"));
 			var onLoadLocalizations = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnLoadLocalizations"));
 
-			int start = IL.ScanForInstructionPattern(loadLanguage,
-				new ILCheck(OpCodes.Call, loadFilesForCulture)
+			int start = IL.ScanForInstructionPatternEnd(loadLanguage,
+				IL.CheckMethod(OpCodes.Call, "LanguageManager::LoadFilesForCulture")
 			);
-			if (start == -1)
-				throw new PatcherException("Failed to find starting point for Terraria.LanguageManager.LoadLanguage");
-			start++;
+			CheckFailedToFindStart(start, 0, functionName);
 
-			IL.MethodInsert(loadLanguage, start, new[] {
+			IL.MethodAppend(loadLanguage, start,
 				Instruction.Create(OpCodes.Ldarg_1),
 				Instruction.Create(OpCodes.Call, onLoadLocalizations)
-			});
-
-			/*IL.MethodInsert(loadLanguage, loadLanguage.Body.Instructions.Count - 2, new[] {
-				Instruction.Create(OpCodes.Ldfld, _localizedTexts),
-				Instruction.Create(OpCodes.Call, onLoadCoinNames),
-				Instruction.Create(OpCodes.Ldarg_0)
-			});*/
+			);
 		}
 
 		#endregion

@@ -14,9 +14,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TerrariaRupeeReplacer.Patching;
 using TerrariaRupeeReplacer.Windows;
-using IOPath = System.IO.Path;
-using IOFile = System.IO.File;
-using IODirectory = System.IO.Directory;
+using Path = System.IO.Path;
+using File = System.IO.File;
+using Directory = System.IO.Directory;
 using TerrariaRupeeReplacer.Properties;
 using Microsoft.Win32;
 using System.Xml;
@@ -77,6 +77,7 @@ namespace TerrariaRupeeReplacer {
 
 			LoadSettings();
 
+			// Setup portal animation timer
 			portalTimer.AutoReset = true;
 			portalTimer.Elapsed += OnPortalTimer;
 
@@ -97,13 +98,6 @@ namespace TerrariaRupeeReplacer {
 
 			// Disable drag/drop text in textboxes so you can scroll their contents easily
 			DataObject.AddCopyingHandler(textBoxExe, (sender, e) => { if (e.IsDragDrop) e.CancelCommand(); });
-		}
-
-		private void OnPortalTimer(object sender, ElapsedEventArgs e) {
-			Dispatcher.Invoke(() => {
-				portalFrame = (portalFrame + 1) % 4;
-				imagePortal.Viewbox = new Rect(0, portalFrame * 34, 32, 32);
-			});
 		}
 
 		#endregion
@@ -144,7 +138,7 @@ namespace TerrariaRupeeReplacer {
 			ContentReplacer.CoinPortal = Settings.Default.CoinPortal;
 
 			// Try and load Terraria's current rupee configuration
-			LoadCurrentConfiguration();
+			ContentReplacer.LoadXmlConfiguration();
 
 			// Setup controls
 			textBoxExe.Text = Patcher.ExePath;
@@ -186,64 +180,7 @@ namespace TerrariaRupeeReplacer {
 			Settings.Default.CoinPortal = ContentReplacer.CoinPortal;
 			Settings.Default.Save();
 		}
-		/**<summary>Loads the current rupee configuration in Terraria.</summary>*/
-		private void LoadCurrentConfiguration() {
-			try {
-				string configPath = IOPath.Combine(Patcher.ExeDirectory, CoinReplacer.ConfigName);
-
-				XmlDocument doc = new XmlDocument();
-				XmlNode node;
-				XmlAttribute attribute;
-
-				doc.Load(configPath);
-
-				RupeeColors rupeeValue;
-				bool boolValue;
-
-				node = doc.SelectSingleNode("/RupeeReplacer/CopperCoin");
-				attribute = (node != null ? node.Attributes["Color"] : null);
-				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
-					ContentReplacer.Copper = rupeeValue;
-				}
-				node = doc.SelectSingleNode("/RupeeReplacer/SilverCoin");
-				attribute = (node != null ? node.Attributes["Color"] : null);
-				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
-					ContentReplacer.Silver = rupeeValue;
-				}
-				node = doc.SelectSingleNode("/RupeeReplacer/GoldCoin");
-				attribute = (node != null ? node.Attributes["Color"] : null);
-				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
-					ContentReplacer.Gold = rupeeValue;
-				}
-				node = doc.SelectSingleNode("/RupeeReplacer/PlatinumCoin");
-				attribute = (node != null ? node.Attributes["Color"] : null);
-				if (attribute != null && Enum.TryParse(attribute.InnerText, out rupeeValue)) {
-					ContentReplacer.Platinum = rupeeValue;
-				}
-
-				node = doc.SelectSingleNode("/RupeeReplacer/CoinGun");
-				attribute = (node != null ? node.Attributes["Enabled"] : null);
-				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
-					ContentReplacer.CoinGun = boolValue;
-				}
-				node = doc.SelectSingleNode("/RupeeReplacer/LuckyCoin");
-				attribute = (node != null ? node.Attributes["Enabled"] : null);
-				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
-					ContentReplacer.LuckyCoin = boolValue;
-				}
-				node = doc.SelectSingleNode("/RupeeReplacer/CoinRing");
-				attribute = (node != null ? node.Attributes["Enabled"] : null);
-				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
-					ContentReplacer.CoinRing = boolValue;
-				}
-				node = doc.SelectSingleNode("/RupeeReplacer/CoinPortal");
-				attribute = (node != null ? node.Attributes["Enabled"] : null);
-				if (attribute != null && bool.TryParse(attribute.InnerText, out boolValue)) {
-					ContentReplacer.CoinPortal = boolValue;
-				}
-			}
-			catch { }
-		}
+		
 
 		#endregion
 		//=========== HELPERS ============
@@ -285,56 +222,6 @@ namespace TerrariaRupeeReplacer {
 
 			imagePortal.ImageSource = new BitmapImage(new Uri("pack://application:,,,/Resources/Content/Images/RupeePortal" + ContentReplacer.Gold.ToString() + ".png"));
 		}
-		/**<summary>Saves the xml to be modified for use in Terraria.</summary>*/
-		private void SaveRupeeConfigXml() {
-			try {
-				string configPath = IOPath.Combine(Patcher.ExeDirectory, CoinReplacer.ConfigName);
-
-				XmlDocument doc = new XmlDocument();
-				doc.AppendChild(doc.CreateXmlDeclaration("1.0", "UTF-8", null));
-				
-				XmlElement replacer = doc.CreateElement("RupeeReplacer");
-				doc.AppendChild(replacer);
-
-				XmlElement element = doc.CreateElement("CopperCoin");
-				element.SetAttribute("Color", ContentReplacer.Copper.ToString());
-				replacer.AppendChild(element);
-
-				element = doc.CreateElement("SilverCoin");
-				element.SetAttribute("Color", ContentReplacer.Silver.ToString());
-				replacer.AppendChild(element);
-
-				element = doc.CreateElement("GoldCoin");
-				element.SetAttribute("Color", ContentReplacer.Gold.ToString());
-				replacer.AppendChild(element);
-
-				element = doc.CreateElement("PlatinumCoin");
-				element.SetAttribute("Color", ContentReplacer.Platinum.ToString());
-				replacer.AppendChild(element);
-
-
-				element = doc.CreateElement("CoinGun");
-				element.SetAttribute("Enabled", ContentReplacer.CoinGun.ToString());
-				replacer.AppendChild(element);
-
-				element = doc.CreateElement("LuckyCoin");
-				element.SetAttribute("Enabled", ContentReplacer.LuckyCoin.ToString());
-				replacer.AppendChild(element);
-
-				element = doc.CreateElement("CoinRing");
-				element.SetAttribute("Enabled", ContentReplacer.CoinRing.ToString());
-				replacer.AppendChild(element);
-
-				element = doc.CreateElement("CoinPortal");
-				element.SetAttribute("Enabled", ContentReplacer.CoinPortal.ToString());
-				replacer.AppendChild(element);
-
-				doc.Save(configPath);
-			}
-			catch (Exception ex) {
-				throw new Exception("Failed to save RupeeConfig.xml", ex);
-			}
-		}
 		/**<summary>Checks if the path is valid.</summary>*/
 		private bool ValidPathTest() {
 			if (Patcher.ExePath == "") {
@@ -342,7 +229,7 @@ namespace TerrariaRupeeReplacer {
 				return false;
 			}
 			try {
-				IOPath.GetDirectoryName(Patcher.ExePath);
+				Path.GetDirectoryName(Patcher.ExePath);
 				return true;
 			}
 			catch (ArgumentException) {
@@ -376,14 +263,21 @@ namespace TerrariaRupeeReplacer {
 		#region Regular
 
 		private void OnClosing(object sender, System.ComponentModel.CancelEventArgs e) {
+			portalTimer.Stop();
 			SaveSettings();
+		}
+		private void OnPortalTimer(object sender, ElapsedEventArgs e) {
+			Dispatcher.Invoke(() => {
+				portalFrame = (portalFrame + 1) % 4;
+				imagePortal.Viewbox = new Rect(0, portalFrame * 34, 32, 32);
+			});
 		}
 		private void OnPatch(object sender = null, RoutedEventArgs e = null) {
 			MessageBoxResult result;
 			if (!ValidPathTest())
 				return;
-			if (!IOFile.Exists(Patcher.ExePath)) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find Terraria executable!", "Missing Exe");
+			if (!File.Exists(Patcher.ExePath)) {
+				TriggerMessageBox.Show(this, MessageIcon.Error, "Could not find Terraria executable!", "Missing Exe");
 				return;
 			}
 			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to patch the current Terraria executable?", "Patch Terraria", MessageBoxButton.YesNo);
@@ -394,39 +288,44 @@ namespace TerrariaRupeeReplacer {
 			try {
 				Patcher.Patch();
 				ContentReplacer.Replace();
-				SaveRupeeConfigXml();
+				ContentReplacer.SaveXmlConfiguration();
 				TriggerMessageBox.Show(this, MessageIcon.Info, "Terraria successfully patched!", "Terraria Patched");
+			}
+			catch (AlreadyPatchedException) {
+				TriggerMessageBox.Show(this, MessageIcon.Error, "This executable has already been patched by Rupee Replacer! Use Restore & Patch instead.", "Already Patched");
 			}
 			catch (Exception ex) {
 				result = TriggerMessageBox.Show(this, MessageIcon.Error, "An error occurred while patching Terraria! Would you like to see the error?", "Patch Error", MessageBoxButton.YesNo);
 				if (result == MessageBoxResult.Yes)
 					ErrorMessageBox.Show(ex, true);
-				return;
 			}
 		}
 		private void OnRestore(object sender = null, RoutedEventArgs e = null) {
 			MessageBoxResult result;
+			MessageBoxResult result2;
+			bool cleanup = false;
 			if (!ValidPathTest())
 				return;
-			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to restore the current Terraria executable to its backup?", "Restore Terraria", MessageBoxButton.YesNo);
-			if (result == MessageBoxResult.No)
-				return;
-			if (!IOFile.Exists(Patcher.BackupPath)) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find Terraria backup!", "Missing Backup");
+			if (!File.Exists(Patcher.BackupPath)) {
+				TriggerMessageBox.Show(this, MessageIcon.Error, "Could not find Terraria backup!", "Missing Backup");
 				return;
 			}
-			if (IOFile.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
-				result = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
-				if (result == MessageBoxResult.No)
+			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Would you like to restore the current Terraria executable to its backup and cleanup the required files or just restore the backup?", "Restore Terraria", MessageBoxButton.YesNoCancel, "Cleanup & Restore", "Restore Only");
+			if (result == MessageBoxResult.Cancel)
+				return;
+			cleanup = result == MessageBoxResult.Yes;
+			if (File.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
+				result2 = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
+				if (result2 == MessageBoxResult.No)
 					return;
 			}
 			try {
-				Patcher.Restore();
+				Patcher.Restore(result == MessageBoxResult.Yes);
 				bool someMissing = ContentReplacer.Restore();
 				// Clean up directory and remove config file
-				string configPath = IOPath.Combine(Patcher.ExeDirectory, CoinReplacer.ConfigName);
-				if (IOFile.Exists(configPath))
-					IOFile.Delete(configPath);
+				string configPath = Path.Combine(Patcher.ExeDirectory, CoinReplacer.ConfigName);
+				if (File.Exists(configPath))
+					File.Delete(configPath);
 				if (someMissing)
 					TriggerMessageBox.Show(this, MessageIcon.Info, "Terraria executable restored but some backup content files were missing!", "Missing Content");
 				else
@@ -442,14 +341,14 @@ namespace TerrariaRupeeReplacer {
 			MessageBoxResult result;
 			if (!ValidPathTest())
 				return;
+			if (!File.Exists(Patcher.BackupPath)) {
+				TriggerMessageBox.Show(this, MessageIcon.Error, "Could not find Terraria backup!", "Missing Backup");
+				return;
+			}
 			result = TriggerMessageBox.Show(this, MessageIcon.Question, "Are you sure you want to restore Terraria from its backup and then patch it?", "Patch & Restore Terraria", MessageBoxButton.YesNo);
 			if (result == MessageBoxResult.No)
 				return;
-			if (!IOFile.Exists(Patcher.BackupPath)) {
-				TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not find Terraria backup!", "Missing Backup");
-				return;
-			}
-			if (IOFile.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
+			if (File.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
 				result = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
 				if (result == MessageBoxResult.No)
 					return;
@@ -457,7 +356,7 @@ namespace TerrariaRupeeReplacer {
 			if (!CheckSupportedVersion(Patcher.BackupPath))
 				return;
 			try {
-				Patcher.Restore();
+				Patcher.Restore(false);
 			}
 			catch (Exception ex) {
 				result = TriggerMessageBox.Show(this, MessageIcon.Error, "An error occurred while restoring Terraria! Would you like to see the error?", "Restore Error", MessageBoxButton.YesNo);
@@ -468,17 +367,19 @@ namespace TerrariaRupeeReplacer {
 			try {
 				Patcher.Patch();
 				ContentReplacer.Replace();
-				SaveRupeeConfigXml();
+				ContentReplacer.SaveXmlConfiguration();
 				TriggerMessageBox.Show(this, MessageIcon.Info, "Terraria successfully restored and patched!", "Terraria Repatched");
+			}
+			catch (AlreadyPatchedException) {
+				TriggerMessageBox.Show(this, MessageIcon.Error, "The backup executable has already been patched by Rupee Replacer!", "Already Patched");
 			}
 			catch (Exception ex) {
 				result = TriggerMessageBox.Show(this, MessageIcon.Error, "An error occurred while patching Terraria! Would you like to see the error?", "Patch Error", MessageBoxButton.YesNo);
 				if (result == MessageBoxResult.Yes)
 					ErrorMessageBox.Show(ex, true);
-				return;
 			}
 		}
-		private void OnUpdateRupees(object sender, RoutedEventArgs e) {
+		private void OnUpdateContent(object sender, RoutedEventArgs e) {
 			MessageBoxResult result;
 			if (!ValidPathTest())
 				return;
@@ -487,7 +388,7 @@ namespace TerrariaRupeeReplacer {
 				return;
 			try {
 				ContentReplacer.Replace();
-				SaveRupeeConfigXml();
+				ContentReplacer.SaveXmlConfiguration();
 				TriggerMessageBox.Show(this, MessageIcon.Info, "Rupee content files successfully updated!", "Rupees Updated");
 			}
 			catch (Exception ex) {
@@ -512,7 +413,7 @@ namespace TerrariaRupeeReplacer {
 			fileDialog.FilterIndex = 0;
 			fileDialog.CheckFileExists = true;
 			try {
-				fileDialog.InitialDirectory = IOPath.GetFullPath(Patcher.ExeDirectory);
+				fileDialog.InitialDirectory = Path.GetFullPath(Patcher.ExeDirectory);
 			}
 			catch { }
 			var result = fileDialog.ShowDialog(this);
@@ -567,7 +468,7 @@ namespace TerrariaRupeeReplacer {
 
 		private void OnLaunchTerraria(object sender, RoutedEventArgs e) {
 			try {
-				if (IOFile.Exists(Patcher.ExePath))
+				if (File.Exists(Patcher.ExePath))
 					Process.Start(Patcher.ExePath);
 				else
 					TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not locate the Terraria executable! Cannot launch Terraria.", "Missing Executable");
@@ -578,7 +479,7 @@ namespace TerrariaRupeeReplacer {
 		}
 		private void OnOpenTerrariaFolder(object sender, RoutedEventArgs e) {
 			try {
-				if (IODirectory.Exists(Patcher.ExeDirectory))
+				if (Directory.Exists(Patcher.ExeDirectory))
 					Process.Start(Patcher.ExeDirectory);
 				else
 					TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not locate the Terraria folder! Cannot open folder.", "Missing Folder");

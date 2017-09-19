@@ -47,7 +47,6 @@ namespace TerrariaRupeeReplacer {
 				}
 			}
 			catch { }
-
 		}
 		/**<summary>Starts a new line.</summary>*/
 		public static void WriteLine() {

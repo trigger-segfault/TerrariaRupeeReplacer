@@ -1,15 +1,10 @@
-﻿#region License
-/* FNA - XNA4 Reimplementation for Desktop Platforms
+﻿/* FNA - XNA4 Reimplementation for Desktop Platforms
  * Copyright 2009-2017 Ethan Lee and the MonoGame Team
  *
  * Released under the Microsoft Public License.
  * See LICENSE for details.
  */
-#endregion
-
-#region Using Statements
 using System.IO;
-#endregion
 
 namespace TerrariaRupeeReplacer.Xnb {
 	public static class DxtUtil {

@@ -13,25 +13,13 @@ using Terraria.ID;
 using Terraria.Localization;
 
 namespace TerrariaRupeeReplacer {
-	/**<summary>The available rupee colors.</summary>*/
-	public enum RupeeColors {
-		Green,
-		Blue,
-		Yellow,
-		Red,
-		Purple,
-		Orange,
-		Silver,
-		Gold
-	}
-
 	/**<summary>Handles overriding coin related functions.</summary>*/
-	public static class CoinReplacer {
+	public class CoinReplacer {
 		//=========== CLASSES ============
 		#region Classes
 
 		/**<summary>Aquire this all ahead of time to reduce reflection slowdown.</summary>*/
-		private static class TerrariaReflection {
+		protected static class TerrariaReflection {
 			//=========== MEMBERS ============
 			#region Members
 
@@ -67,19 +55,19 @@ namespace TerrariaRupeeReplacer {
 		//--------------------------------
 		#region Replacements
 
-		private static readonly Color PlatinumColor = new Color(220, 220, 198);
-		private static readonly Color GoldColor = new Color(224, 201, 92);
-		private static readonly Color SilverColor = new Color(181, 192, 193);
-		private static readonly Color CopperColor = new Color(246, 138, 96);
-		private static readonly string Platinum = "Platinum";
-		private static readonly string Gold = "Gold";
-		private static readonly string Silver = "Silver";
-		private static readonly string Copper = "Copper";
+		protected static readonly Color PlatinumColor = new Color(220, 220, 198);
+		protected static readonly Color GoldColor = new Color(224, 201, 92);
+		protected static readonly Color SilverColor = new Color(181, 192, 193);
+		protected static readonly Color CopperColor = new Color(246, 138, 96);
+		protected static readonly string Platinum = "Platinum";
+		protected static readonly string Gold = "Gold";
+		protected static readonly string Silver = "Silver";
+		protected static readonly string Copper = "Copper";
 
-		private static readonly bool CoinGun = true;
-		private static readonly bool LuckyCoin = true;
-		private static readonly bool CoinRing = true;
-		private static readonly bool CoinPortal = true;
+		protected static readonly bool CoinGun = true;
+		protected static readonly bool LuckyCoin = true;
+		protected static readonly bool CoinRing = true;
+		protected static readonly bool CoinPortal = true;
 
 		#endregion
 		//--------------------------------
@@ -231,7 +219,7 @@ namespace TerrariaRupeeReplacer {
 		#region Terraria.Main
 
 		/**<summary>Patches coin buy and sell text.</summary>*/
-		public static Color OnCoinStoreValue(Color color, int num4, string[] array, int storeValue) {
+		public static Color OnNPCShopPrice(Color color, int num4, string[] array, int storeValue) {
 			string text = "";
 			int plat = 0;
 			int gold = 0;
@@ -320,6 +308,11 @@ namespace TerrariaRupeeReplacer {
 		}
 		/**<summary>Patches the reforge cost text.</summary>*/
 		public static string OnReforgeCost(int cost) {
+			/*int cost = Main.reforgeItem.value;
+			if (Main.player[Main.myPlayer].discount) {
+				cost = (int)((double)cost * 0.8);
+			}
+			cost /= 3;*/
 			string text = "";
 			int plat = 0;
 			int gold = 0;
@@ -346,8 +339,7 @@ namespace TerrariaRupeeReplacer {
 			}
 			Color rupeeColor = Color.White;
 			if (plat > 0) {
-				text = string.Concat(new object[]
-				{
+				text = string.Concat(new object[] {
 						text,
 						"[c/",
 						Colors.AlphaDarken(PlatinumColor).Hex3(),
@@ -360,8 +352,7 @@ namespace TerrariaRupeeReplacer {
 				rupeeColor = PlatinumColor;
 			}
 			if (gold > 0) {
-				text = string.Concat(new object[]
-				{
+				text = string.Concat(new object[] {
 						text,
 						"[c/",
 						Colors.AlphaDarken(GoldColor).Hex3(),
@@ -374,8 +365,7 @@ namespace TerrariaRupeeReplacer {
 				rupeeColor = GoldColor;
 			}
 			if (silver > 0) {
-				text = string.Concat(new object[]
-				{
+				text = string.Concat(new object[] {
 						text,
 						"[c/",
 						Colors.AlphaDarken(SilverColor).Hex3(),
@@ -388,8 +378,7 @@ namespace TerrariaRupeeReplacer {
 				rupeeColor = SilverColor;
 			}
 			if (copper > 0) {
-				text = string.Concat(new object[]
-				{
+				text = string.Concat(new object[] {
 						text,
 						"[c/",
 						Colors.AlphaDarken(CopperColor).Hex3(),
@@ -401,8 +390,7 @@ namespace TerrariaRupeeReplacer {
 				});
 				rupeeColor = CopperColor;
 			}
-			text = string.Concat(new object[]
-			{
+			text = string.Concat(new object[] {
 					text,
 					"[c/",
 					Colors.AlphaDarken(rupeeColor/*Color.White*/).Hex3(),
@@ -411,6 +399,168 @@ namespace TerrariaRupeeReplacer {
 					"]"
 			});
 			return text;
+		}
+		/**<summary>Patches the tax collect amount text.</summary>*/
+		public static void OnTaxCollect(ref string focusText, ref Color color2, ref int num6) {
+			string text = "";
+			int plat = 0;
+			int gold = 0;
+			int silver = 0;
+			int copper = 0;
+			int taxMoney = Main.player[Main.myPlayer].taxMoney;
+			if (taxMoney < 0) {
+				taxMoney = 0;
+			}
+			num6 = taxMoney;
+			if (taxMoney >= 1000000) {
+				plat = taxMoney / 1000000;
+				taxMoney -= plat * 1000000;
+			}
+			if (taxMoney >= 10000) {
+				gold = taxMoney / 10000;
+				taxMoney -= gold * 10000;
+			}
+			if (taxMoney >= 100) {
+				silver = taxMoney / 100;
+				taxMoney -= silver * 100;
+			}
+			if (taxMoney >= 1) {
+				copper = taxMoney;
+			}
+			if (plat > 0) {
+				text += plat + " " + GetColorName(Platinum, true) + " ";
+			}
+			if (gold > 0) {
+				text += gold + " " + GetColorName(Gold, true) + " ";
+			}
+			if (silver > 0) {
+				text += silver + " " + GetColorName(Silver, true) + " ";
+			}
+			if (copper > 0) {
+				text += copper + " " + GetColorName(Copper, true) + " ";
+			}
+			float mouseTextColor = (float)Main.mouseTextColor / 255f;
+			int alpha = (int)Main.mouseTextColor;
+			if (plat > 0) {
+				color2 = new Color(
+					(int)((byte)((float)PlatinumColor.R * mouseTextColor)),
+					(int)((byte)((float)PlatinumColor.G * mouseTextColor)),
+					(int)((byte)((float)PlatinumColor.B * mouseTextColor)),
+				alpha);
+			}
+			else if (gold > 0) {
+				color2 = new Color(
+					(int)((byte)((float)GoldColor.R * mouseTextColor)),
+					(int)((byte)((float)GoldColor.G * mouseTextColor)),
+					(int)((byte)((float)GoldColor.B * mouseTextColor)),
+				alpha);
+			}
+			else if (silver > 0) {
+				color2 = new Color(
+					(int)((byte)((float)SilverColor.R * mouseTextColor)),
+					(int)((byte)((float)SilverColor.G * mouseTextColor)),
+					(int)((byte)((float)SilverColor.B * mouseTextColor)),
+				alpha);
+			}
+			else if (copper > 0) {
+				color2 = new Color(
+					(int)((byte)((float)CopperColor.R * mouseTextColor)),
+					(int)((byte)((float)CopperColor.G * mouseTextColor)),
+					(int)((byte)((float)CopperColor.B * mouseTextColor)),
+				alpha);
+			}
+			if (text == "") {
+				focusText = Lang.inter[89].Value;
+			}
+			else {
+				text += GetRupeeName(true, num6 != 1000000 && num6 != 10000 &&
+					num6 != 100 && num6 != 1);
+				focusText = Lang.inter[89].Value + " (" + text + ")";
+			}
+		}
+		/**<summary>Patches the tax collect amount text.</summary>*/
+		public static void OnNurseHeal(ref string focusText, ref Color color2, ref int num6) {
+			string text = "";
+			int plat = 0;
+			int gold = 0;
+			int silver = 0;
+			int copper = 0;
+			int healCost = num6;
+			if (healCost > 0) {
+				healCost = (int)((double)healCost * 0.75);
+				if (healCost < 1) {
+					healCost = 1;
+				}
+			}
+			if (healCost < 0) {
+				healCost = 0;
+			}
+			num6 = healCost;
+			if (healCost >= 1000000) {
+				plat = healCost / 1000000;
+				healCost -= plat * 1000000;
+			}
+			if (healCost >= 10000) {
+				gold = healCost / 10000;
+				healCost -= gold * 10000;
+			}
+			if (healCost >= 100) {
+				silver = healCost / 100;
+				healCost -= silver * 100;
+			}
+			if (healCost >= 1) {
+				copper = healCost;
+			}
+			if (plat > 0) {
+				text += plat + " " + GetColorName(Platinum, true) + " ";
+			}
+			if (gold > 0) {
+				text += gold + " " + GetColorName(Gold, true) + " ";
+			}
+			if (silver > 0) {
+				text += silver + " " + GetColorName(Silver, true) + " ";
+			}
+			if (copper > 0) {
+				text += copper + " " + GetColorName(Copper, true) + " ";
+			}
+			float mouseTextColor = (float)Main.mouseTextColor / 255f;
+			int alpha = (int)Main.mouseTextColor;
+			if (plat > 0) {
+				color2 = new Color(
+					(int)((byte)((float)PlatinumColor.R * mouseTextColor)),
+					(int)((byte)((float)PlatinumColor.G * mouseTextColor)),
+					(int)((byte)((float)PlatinumColor.B * mouseTextColor)),
+				alpha);
+			}
+			else if (gold > 0) {
+				color2 = new Color(
+					(int)((byte)((float)GoldColor.R * mouseTextColor)),
+					(int)((byte)((float)GoldColor.G * mouseTextColor)),
+					(int)((byte)((float)GoldColor.B * mouseTextColor)),
+				alpha);
+			}
+			else if (silver > 0) {
+				color2 = new Color(
+					(int)((byte)((float)SilverColor.R * mouseTextColor)),
+					(int)((byte)((float)SilverColor.G * mouseTextColor)),
+					(int)((byte)((float)SilverColor.B * mouseTextColor)),
+				alpha);
+			}
+			else if (copper > 0) {
+				color2 = new Color(
+					(int)((byte)((float)CopperColor.R * mouseTextColor)),
+					(int)((byte)((float)CopperColor.G * mouseTextColor)),
+					(int)((byte)((float)CopperColor.B * mouseTextColor)),
+				alpha);
+			}
+			if (text == "") {
+				focusText = Lang.inter[54].Value;
+			}
+			else {
+				text += GetRupeeName(true, num6 != 1000000 && num6 != 10000 &&
+					num6 != 100 && num6 != 1);
+				focusText = Lang.inter[54].Value + " (" + text + ")";
+			}
 		}
 		/**<summary>Patches death dropped coins text.</summary>*/
 		public static string OnValueToCoins(int value) {
@@ -454,7 +604,7 @@ namespace TerrariaRupeeReplacer {
 		#region Terraria.Dust
 
 		/**<summary>Patches coin glowing during movement.</summary>*/
-		public static void OnCoinSparkle(Dust dust) {
+		public static void OnCoinGlow(Dust dust) {
 			dust.rotation += 0.1f * dust.scale;
 			Color color = Lighting.GetColor((int)(dust.position.X / 16f), (int)(dust.position.Y / 16f));
 			byte average = (byte)((color.R + color.G + color.B) / 3);
@@ -507,7 +657,7 @@ namespace TerrariaRupeeReplacer {
 		#region Terraria.ItemText
 
 		/**<summary>Patches coin pickup text.</summary>*/
-		public static Vector2 OnCoinText(Item newItem, int i) {
+		public static Vector2 OnCoinPickupText(Item newItem, int i) {
 			int value = 0;
 			if (newItem.type == 71) {
 				value += newItem.stack;
@@ -547,7 +697,7 @@ namespace TerrariaRupeeReplacer {
 			return vector;
 		}
 		/**<summary>Patches coin pickup text.</summary>*/
-		public static void OnCoinText2(Item newItem, int i) {
+		public static void OnCoinPickupText2(Item newItem, int i) {
 			if (newItem.type == 71) {
 				Main.itemText[i].coinValue += Main.itemText[i].stack;
 			}

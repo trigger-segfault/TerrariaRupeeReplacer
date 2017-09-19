@@ -55,29 +55,41 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace TerrariaRupeeReplacer.Xnb {
-
+	/**<summary>An exception thrown during Xnb extraction.</summary>*/
 	public class XnbException : Exception {
 		public XnbException(string message) : base(message) { }
-		public XnbException(string message, Exception innerException)
-			: base(message, innerException) { }
+		public XnbException(string message, Exception innerException) : base(message, innerException) { }
 	}
-	public static class XnbExtractor {
 
+	/**<summary>An extractor for Xnb files.</summary>*/
+	public static class XnbExtractor {
+		//========== CONSTANTS ===========
+		#region Constants
+		
 		private const int SurfaceFormatColor = 0;
 		private const int SurfaceFormatDxt1 = 4;
 		private const int SurfaceFormatDxt3 = 5;
 		private const int SurfaceFormatDxt5 = 6;
-
-
+		
 		private const int HeaderSize = 14;
 
+		#endregion
+		//=========== MEMBERS ============
+		#region Members
+
+		/**<summary>The compression decoder.</summary>*/
 		private static LzxDecoder lzxDecoder = new LzxDecoder();
 
+		#endregion
+		//========== EXTRACTING ==========
+		#region Extracting
+
+		/**<summary>Extracts and returns a bitmap.</summary>*/
 		public static Bitmap ExtractBitmap(string inputFile) {
 			BinaryReader reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(inputFile)));
 
-			if (!CompareBytesToString(reader.ReadBytes(3), "XNB")) {
-				throw new XnbException("Not an XNB file: " + Path.GetFileName(inputFile));
+			if (!reader.ReadAndCompareString("XNB")) {
+				throw new XnbException("Not an XNB file: " + Path.GetFileName(inputFile) + ".");
 			}
 
 			// Ignore target platform, it shouldn't matter
@@ -85,7 +97,7 @@ namespace TerrariaRupeeReplacer.Xnb {
 
 			int version = reader.ReadByte();
 			if (version != 5) {
-				throw new XnbException("unsupported XNB version: " + version);
+				throw new XnbException("Unsupported XNB version: " + version + ".");
 			}
 
 			bool compressed = (reader.ReadByte() & 0x80) != 0;
@@ -124,28 +136,23 @@ namespace TerrariaRupeeReplacer.Xnb {
 
 			// Shared resources are unused by Terraria assets
 			if (reader.Read7BitEncodedInt() != 0) {
-				throw new XnbException("shared resources are not supported");
+				throw new XnbException("Shared resources are not supported.");
 			}
 
 			if (reader.Read7BitEncodedInt() != 1) {
-				throw new XnbException("primary asset is null; this shouldn't happen");
+				throw new XnbException("Primary asset is null; this shouldn't happen.");
 			}
-
-			string baseFileName = Path.GetFileNameWithoutExtension(inputFile);
 
 			// Switch on the type reader name, excluding assembly information
 			switch (typeReaderName) {
-			case "Microsoft.Xna.Framework.Content.Texture2DReader": {
-					Bitmap bmp = ReadTexture2D(reader);
-					return bmp;
-					//bmp.Save(outputFile, ImageFormat.Png);
-				}
-			default: {
-					throw new XnbException("unsupported asset type: " + typeReaderName);
-				}
+			case "Microsoft.Xna.Framework.Content.Texture2DReader":
+				return ReadTexture2D(reader);
+
+			default:
+				throw new XnbException("Unsupported asset type: " + typeReaderName + ".");
 			}
 		}
-
+		/**<summary>Reads an Xnb Texture2D.</summary>*/
 		private static Bitmap ReadTexture2D(BinaryReader reader) {
 			int surfaceFormat = reader.ReadInt32();
 			int width = reader.ReadInt32();
@@ -159,27 +166,19 @@ namespace TerrariaRupeeReplacer.Xnb {
 			if (mipCount < 1) {
 				throw new XnbException("Unexpected mipCount: " + mipCount + ".");
 			}
-			/*if (size != width * height * (surfaceFormat != 5 ? 4 : 1)) {
-				throw new XnbException("Unexpected size: " + size + ".");
-			}*/
 
 			byte[] source = reader.ReadBytes(size);
 
 			if (surfaceFormat != SurfaceFormatColor) {
-				//https://github.com/mcgrue/FNA/blob/master/src/Content/ContentReaders/Texture2DReader.cs
-
-				if (surfaceFormat == SurfaceFormatDxt1) {
+				// https://github.com/mcgrue/FNA/blob/master/src/Content/ContentReaders/Texture2DReader.cs
+				if (surfaceFormat == SurfaceFormatDxt1)
 					source = DxtUtil.DecompressDxt1(source, width, height);
-				}
-				else if (surfaceFormat == SurfaceFormatDxt3) {
+				else if (surfaceFormat == SurfaceFormatDxt3)
 					source = DxtUtil.DecompressDxt3(source, width, height);
-				}
-				else if (surfaceFormat == SurfaceFormatDxt5) {
+				else if (surfaceFormat == SurfaceFormatDxt5)
 					source = DxtUtil.DecompressDxt5(source, width, height);
-				}
-				else {
-					throw new XnbException("Unexpected surface format: " + surfaceFormat + ".");
-				}
+				else
+					throw new XnbException("Unsupported surface format: " + surfaceFormat + ".");
 			}
 
 			// Swap R and B channels
@@ -196,37 +195,9 @@ namespace TerrariaRupeeReplacer.Xnb {
 			Marshal.Copy(source, 0, data, source.Length);
 			bmp.UnlockBits(bmpData);
 
-			// Skip the rest of the mips
-			for (int i = 1; i < mipCount; i++) {
-				size = reader.ReadInt32();
-				reader.BaseStream.Position += size;
-			}
-
 			return bmp;
 		}
 
-		private static void SkipList(BinaryReader reader, int objSize) {
-			reader.Read7BitEncodedInt();
-			int count = reader.ReadInt32();
-			reader.BaseStream.Position += count * objSize;
-		}
-		private static void SkipCharList(BinaryReader reader) {
-			reader.Read7BitEncodedInt();
-			int count = reader.ReadInt32();
-			reader.ReadChars(count);
-		}
-
-		public static bool CompareBytes(byte[] a, byte[] b) {
-			if (a.Length != b.Length)
-				return false;
-			for (int i = 0; i < a.Length; i++) {
-				if (a[i] != b[i])
-					return false;
-			}
-			return true;
-		}
-		public static bool CompareBytesToString(byte[] a, string s) {
-			return CompareBytes(a, Encoding.ASCII.GetBytes(s));
-		}
+		#endregion
 	}
 }

@@ -89,7 +89,7 @@
       <DependentUpon>TriggerMessageBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Xnb\DtxUtil.cs" />
-    <Compile Include="Xnb\EmbeddedApps.cs" />
+    <Compile Include="Xnb\EmbeddedResources.cs" />
     <Compile Include="Xnb\HuffTable.cs" />
     <Compile Include="Xnb\LzxBuffer.cs" />
     <Compile Include="Xnb\LzxDecoder.cs" />

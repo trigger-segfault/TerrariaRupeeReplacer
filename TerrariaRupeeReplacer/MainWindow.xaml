@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="Terraria Rupee Replacer" Height="442" Width="480" ResizeMode="CanMinimize" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="App.ico" Closing="OnClosing">
+        Title="Terraria Rupee Replacer" ResizeMode="CanMinimize" SnapsToDevicePixels="True" UseLayoutRounding="True" Icon="App.ico" Closing="OnClosing" SizeToContent="WidthAndHeight">
     <Window.Resources>
         <FontFamily x:Key="Andy">pack://application:,,,/Resources/#Andy</FontFamily>
         <Style x:Key="DisablableImage" TargetType="{x:Type Image}">
@@ -25,7 +25,7 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <DockPanel LastChildFill="True" Margin="0">
+    <DockPanel x:Name="clientArea" LastChildFill="True" Margin="0" Width="464" Height="404">
         <Menu DockPanel.Dock="Top" x:Name="menu" BorderThickness="0,0,0,1" BorderBrush="#FF919395">
             <Menu.Background>
                 <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -94,7 +94,7 @@
                     </Button.Background>
                     <TextBlock TextWrapping="Wrap" TextAlignment="Center" Text="Restore&#xD;&#xA;&amp; Patch" IsHitTestVisible="False"/>
                 </Button>
-                <Button x:Name="buttonUpdateRupees" HorizontalAlignment="Center" Margin="5,0,5,0" VerticalAlignment="Bottom" Width="90" Click="OnUpdateRupees" Height="60" FontSize="22" FontWeight="Bold" Foreground="White" Focusable="False" IsTabStop="False" ToolTip="Replaces the rupee content with the new selections.&#xD;&#xA;This does not need to be called right after patching." FontFamily="{StaticResource Andy}" BorderBrush="#FF1B8040">
+                <Button x:Name="buttonUpdateRupees" HorizontalAlignment="Center" Margin="5,0,5,0" VerticalAlignment="Bottom" Width="90" Click="OnUpdateContent" Height="60" FontSize="22" FontWeight="Bold" Foreground="White" Focusable="False" IsTabStop="False" ToolTip="Replaces the rupee content with the new selections.&#xD;&#xA;This does not need to be called right after patching." FontFamily="{StaticResource Andy}" BorderBrush="#FF1B8040">
                     <Button.Background>
                         <LinearGradientBrush EndPoint="0,1" StartPoint="0,0">
                             <GradientStop Color="#FF48E67A" Offset="0"/>
