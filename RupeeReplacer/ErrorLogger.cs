@@ -10,8 +10,10 @@ namespace TerrariaRupeeReplacer {
 		//========== CONSTANTS ===========
 		#region Constants
 
-		/**<summary>The path of the error log.</summary>*/
-		public static readonly string LogPath = Path.Combine(Environment.CurrentDirectory, "RupeeReplacerErrorLog.txt");
+		/**<summary>The name of the error log file.</summary>*/
+		public static readonly string LogName = "RupeeReplacerErrorLog.txt";
+		/**<summary>The path of the error log file.</summary>*/
+		public static readonly string LogPath = Path.Combine(Environment.CurrentDirectory, LogName);
 
 		#endregion
 		//=========== MEMBERS ============

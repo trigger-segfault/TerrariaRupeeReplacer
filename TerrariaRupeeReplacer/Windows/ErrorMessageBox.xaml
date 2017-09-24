@@ -15,7 +15,7 @@
 
         <Border Margin="18,43,18,54" BorderThickness="1" BorderBrush="#FF828790" Grid.ColumnSpan="2">
             <ScrollViewer x:Name="scrollViewer" Background="#FFFBFBFB" Padding="4,1" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Auto">
-                <TextBlock x:Name="textBlockMessage" Text="Exception:" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+                <TextBlock x:Name="textBlockMessage" Text="Exception:" HorizontalAlignment="Left" VerticalAlignment="Top" SizeChanged="OnMessageSizeChanged"/>
             </ScrollViewer>
         </Border>
 

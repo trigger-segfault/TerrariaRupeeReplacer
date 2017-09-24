@@ -57,6 +57,14 @@ namespace TerrariaRupeeReplacer.Windows {
 		}
 
 		#endregion
+		//============ EVENTS ============
+		#region Events
+		
+		private void OnWindowLoaded(object sender, RoutedEventArgs e) {
+			clientArea.Height = 214 + textBlockDescription.ActualHeight;
+		}
+
+		#endregion
 		//=========== SHOWING ============
 		#region Showing
 

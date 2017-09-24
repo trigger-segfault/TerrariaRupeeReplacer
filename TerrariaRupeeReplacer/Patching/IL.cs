@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
-using TerrariaRupeeReplacer.Patching;
 using FieldAttributes = Mono.Cecil.FieldAttributes;
 
 namespace TerrariaRupeeReplacer.Patching {
@@ -289,7 +288,7 @@ namespace TerrariaRupeeReplacer.Patching {
 		public static OperandCheck Check(OpCode opCode, string value) {
 			return new OperandCheck(opCode, (i, op) => { return (op is string && (string)op == value); });
 		}
-		
+
 		#endregion
 		//--------------------------------
 		#region Reference/Definition
@@ -328,7 +327,7 @@ namespace TerrariaRupeeReplacer.Patching {
 		public static OperandCheck Check(OpCode opCode, CallSite callSite) {
 			return new OperandCheck(opCode, (i, op) => { return (op is CallSite && ((CallSite)op).FullName == callSite.FullName); });
 		}
-		
+
 		/**<summary>Checks an opcode and field reference.</summary>*/
 		public static OperandCheck CheckField(OpCode opCode, string contains) {
 			return new OperandCheck(opCode, (i, op) => { return (op is FieldReference && ((FieldReference)op).FullName.Contains(contains)); });
@@ -350,29 +349,21 @@ namespace TerrariaRupeeReplacer.Patching {
 		//=========== METHODS ============
 		#region Methods
 		//--------------------------------
+		#region Getters
+
+		/**<summary>Gets the number of instructions in the method.</summary>*/
+		public static int InstructionCount(MethodDefinition method) {
+			var il = method.Body.GetILProcessor();
+			return il.Body.Instructions.Count;
+		}
+
+		#endregion
+		//--------------------------------
 		#region Prepend
 
 		/**<summary>Prepents to the beginning of the specified method.</summary>*/
 		public static int MethodPrepend(MethodDefinition method, params Instruction[] instructions) {
-			return MethodPrepend(method, 0, instructions);
-		}
-		/**<summary>Prepents to the specified method before the specified instruction index.</summary>*/
-		public static int MethodPrepend(MethodDefinition method, int start, params Instruction[] instructions) {
-			var il = method.Body.GetILProcessor();
-
-			foreach (var inst in instructions) {
-				il.Body.Instructions.Insert(start - 1, inst);
-				start++;
-			}
-			return start;
-		}
-		/**<summary>Prepents to the specified method before the specified instruction.</summary>*/
-		public static void MethodPrepend(MethodDefinition method, Instruction first, params Instruction[] instructions) {
-			var il = method.Body.GetILProcessor();
-
-			foreach (var inst in instructions) {
-				il.InsertBefore(first, inst);
-			}
+			return MethodInsert(method, 0, instructions);
 		}
 
 		#endregion
@@ -381,19 +372,22 @@ namespace TerrariaRupeeReplacer.Patching {
 
 		/**<summary>Appends to the end of the specified method.</summary>*/
 		public static int MethodAppend(MethodDefinition method, params Instruction[] instructions) {
-			var il = method.Body.GetILProcessor();
-			MethodAppend(method, il.Body.Instructions.Count, instructions);
-			return il.Body.Instructions.Count;
+			return MethodInsert(method, InstructionCount(method), instructions);
 		}
+
+		#endregion
+		//--------------------------------
+		#region Insert
+
 		/**<summary>Appends to the index of the specified method.</summary>*/
-		public static int MethodAppend(MethodDefinition method, int start, params Instruction[] instructions) {
+		public static int MethodInsert(MethodDefinition method, int index, params Instruction[] instructions) {
 			var il = method.Body.GetILProcessor();
 
 			foreach (var inst in instructions) {
-				il.Body.Instructions.Insert(start, inst);
-				start++;
+				il.Body.Instructions.Insert(index, inst);
+				index++;
 			}
-			return start;
+			return index;
 		}
 
 		#endregion
@@ -410,8 +404,19 @@ namespace TerrariaRupeeReplacer.Patching {
 			}
 			return instructions.Length;
 		}
+		/**<summary>Replaces a single instruction of the specified method.</summary>*/
+		public static int MethodReplace(MethodDefinition method, int index, params Instruction[] instructions) {
+			var il = method.Body.GetILProcessor();
+
+			il.Body.Instructions.RemoveAt(index);
+			foreach (var inst in instructions) {
+				il.Body.Instructions.Insert(index, inst);
+				index++;
+			}
+			return index;
+		}
 		/**<summary>Replaces a part of the specified method.</summary>*/
-		public static int MethodReplace(MethodDefinition method, int start, int end, params Instruction[] instructions) {
+		public static int MethodReplaceRange(MethodDefinition method, int start, int end, params Instruction[] instructions) {
 			var il = method.Body.GetILProcessor();
 
 			for (int i = start; i < end; i++) {
@@ -425,12 +430,11 @@ namespace TerrariaRupeeReplacer.Patching {
 		}
 		/**<summary>Replaces the start of the specified method.</summary>*/
 		public static int MethodReplaceStart(MethodDefinition method, int end, params Instruction[] instructions) {
-			return MethodReplace(method, 0, end, instructions);
+			return MethodReplaceRange(method, 0, end, instructions);
 		}
 		/**<summary>Replaces the end of the specified method.</summary>*/
 		public static int MethodReplaceEnd(MethodDefinition method, int start, params Instruction[] instructions) {
-			var il = method.Body.GetILProcessor();
-			return MethodReplace(method, start, il.Body.Instructions.Count, instructions);
+			return MethodReplaceRange(method, start, InstructionCount(method), instructions);
 		}
 
 		#endregion
@@ -448,7 +452,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			il.Body.Instructions.RemoveAt(index);
 		}
 		/**<summary>Removes a range of instructions in the specified method.</summary>*/
-		public static void MethodRemove(MethodDefinition method, int start, int end) {
+		public static void MethodRemoveRange(MethodDefinition method, int start, int end) {
 			var il = method.Body.GetILProcessor();
 
 			for (int i = start; i < end; i++) {
@@ -457,12 +461,11 @@ namespace TerrariaRupeeReplacer.Patching {
 		}
 		/**<summary>Removes the start of the specified method.</summary>*/
 		public static void MethodRemoveStart(MethodDefinition method, int end) {
-			MethodRemove(method, 0, end);
+			MethodRemoveRange(method, 0, end);
 		}
 		/**<summary>Removes the end of the specified method.</summary>*/
 		public static void MethodRemoveEnd(MethodDefinition method, int start) {
-			var il = method.Body.GetILProcessor();
-			MethodRemove(method, start, il.Body.Instructions.Count);
+			MethodRemoveRange(method, start, InstructionCount(method));
 		}
 
 		#endregion
@@ -532,7 +535,7 @@ namespace TerrariaRupeeReplacer.Patching {
 		#endregion
 		//--------------------------------
 		#region Instructions
-			
+
 		/**<summary>Scans for the nth instruction pattern.</summary>*/
 		private static int ScanForNthInstructionPattern(MethodDefinition method, int n, int start, bool end, int checkIndex, params OperandCheck[] checks) {
 			var il = method.Body.GetILProcessor();

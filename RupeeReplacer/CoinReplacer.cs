@@ -23,12 +23,16 @@ namespace TerrariaRupeeReplacer {
 			//=========== MEMBERS ============
 			#region Members
 
-			public static ConstructorInfo ctor_LocalizedText;
+			/**<summary>internal LocalizedText(string key, string text)</summary>*/
+			public static ConstructorInfo LocalizedText_ctor;
 
-			public static FieldInfo _categoryGroupedKeys;
-			public static FieldInfo _localizedTexts;
-			
-			public static MethodInfo SetValue;
+			/**<summary>private Dictionary<string, List<string>> LanguageManager._categoryGroupedKeys</summary>*/
+			public static FieldInfo LanguageManager_categoryGroupedKeys;
+			/**<summary>private Dictionary<string, LocalizedText> LanguageManager._localizedTexts</summary>*/
+			public static FieldInfo LanguageManager_localizedTexts;
+
+			/**<summary>internal void LocalizedText.SetValue(string text)</summary>*/
+			public static MethodInfo LocalizedText_SetValue;
 
 			#endregion
 			//========= CONSTRUCTORS =========
@@ -36,12 +40,12 @@ namespace TerrariaRupeeReplacer {
 
 			/**<summary>Aquire all of the reflection infos ahead of time to reduce reflection slowdown.</summary>*/
 			static TerrariaReflection() {
-				ctor_LocalizedText			= typeof(LocalizedText).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
+				LocalizedText_ctor					= typeof(LocalizedText).GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First();
 
-				_categoryGroupedKeys		= typeof(LanguageManager).GetField("_categoryGroupedKeys", BindingFlags.NonPublic | BindingFlags.Instance);
-				_localizedTexts				= typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance);
+				LanguageManager_categoryGroupedKeys	= typeof(LanguageManager).GetField("_categoryGroupedKeys", BindingFlags.NonPublic | BindingFlags.Instance);
+				LanguageManager_localizedTexts		= typeof(LanguageManager).GetField("_localizedTexts", BindingFlags.NonPublic | BindingFlags.Instance);
 
-				SetValue					= typeof(LocalizedText).GetMethod("SetValue", BindingFlags.NonPublic | BindingFlags.Instance);
+				LocalizedText_SetValue				= typeof(LocalizedText).GetMethod("SetValue", BindingFlags.NonPublic | BindingFlags.Instance);
 				
 				// Hooray for reflection!
 			}
@@ -182,8 +186,8 @@ namespace TerrariaRupeeReplacer {
 		}
 		/**<summary>Adds a translation entry to the localization manager.</summary>*/
 		private static void AddTranslation(string key1, string key2, string value) {
-			var _localizedTexts = (Dictionary<string, LocalizedText>)TerrariaReflection._localizedTexts.GetValue(LanguageManager.Instance);
-			var _categoryGroupedKeys = (Dictionary<string, List<string>>)TerrariaReflection._categoryGroupedKeys.GetValue(LanguageManager.Instance);
+			var _localizedTexts = (Dictionary<string, LocalizedText>)TerrariaReflection.LanguageManager_localizedTexts.GetValue(LanguageManager.Instance);
+			var _categoryGroupedKeys = (Dictionary<string, List<string>>)TerrariaReflection.LanguageManager_categoryGroupedKeys.GetValue(LanguageManager.Instance);
 
 			string keyFull = key1 + "." + key2;
 			
@@ -192,10 +196,10 @@ namespace TerrariaRupeeReplacer {
 				return;
 
 			if (_localizedTexts.ContainsKey(keyFull)) {
-				TerrariaReflection.SetValue.Invoke(_localizedTexts[keyFull], new object[] { value });
+				TerrariaReflection.LocalizedText_SetValue.Invoke(_localizedTexts[keyFull], new object[] { value });
 			}
 			else {
-				LocalizedText locText = (LocalizedText)TerrariaReflection.ctor_LocalizedText.Invoke(new object[] { keyFull, value });
+				LocalizedText locText = (LocalizedText)TerrariaReflection.LocalizedText_ctor.Invoke(new object[] { keyFull, value });
 				_localizedTexts.Add(keyFull, locText);
 				if (!_categoryGroupedKeys.ContainsKey(key1)) {
 					_categoryGroupedKeys.Add(key1, new List<string>());

@@ -23,6 +23,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using TerrariaRupeeReplacer.Properties;
+using TerrariaRupeeReplacer.Util;
 
 namespace TerrariaRupeeReplacer.Xnb {
 	/**<summary>A static class for xcompress-based compression and decompression.</summary>*/

@@ -41,7 +41,6 @@ namespace TerrariaRupeeReplacer.Windows {
 				this.buttonContinue.IsDefault = true;
 			}
 		}
-
 		/**<summary>Constructs the error message box with an exception object.</summary>*/
 		public ErrorMessageBox(object exceptionObject, bool alwaysContinue) {
 			InitializeComponent();
@@ -85,7 +84,8 @@ namespace TerrariaRupeeReplacer.Windows {
 			copyTimer.Start();
 		}
 		private void OnSeeFullException(object sender, RoutedEventArgs e) {
-			if (viewingFull) {
+			viewingFull = !viewingFull;
+			if (!viewingFull) {
 				buttonException.Content = "See Full Exception";
 				textBlockMessage.Text = "Exception:\n" + exception.Message;
 				clientArea.Height = 230;
@@ -93,11 +93,17 @@ namespace TerrariaRupeeReplacer.Windows {
 			}
 			else {
 				buttonException.Content = "Hide Full Exception";
+				// Size may not be changed yet so just incase we also have OnMessageSizeChanged
 				textBlockMessage.Text = "Exception:\n" + exception.ToString();
 				clientArea.Height = Math.Min(480, Math.Max(230, textBlockMessage.ActualHeight + 102));
 				scrollViewer.ScrollToTop();
 			}
-			viewingFull = !viewingFull;
+		}
+		private void OnMessageSizeChanged(object sender, SizeChangedEventArgs e) {
+			if (viewingFull) {
+				clientArea.Height = Math.Min(480, Math.Max(230, textBlockMessage.ActualHeight + 102));
+				scrollViewer.ScrollToTop();
+			}
 		}
 		private void OnPreviewKeyDown(object sender, KeyEventArgs e) {
 			var focused = FocusManager.GetFocusedElement(this);

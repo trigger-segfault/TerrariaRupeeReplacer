@@ -8,14 +8,14 @@ using System.Reflection;
 using System.Diagnostics;
 using System.ComponentModel;
 
-namespace TerrariaRupeeReplacer.Xnb {
+namespace TerrariaRupeeReplacer.Util {
 	/**<summary>Extract embedded resources.</summary>*/
 	public static class EmbeddedResources {
 		//========== EXTRACTING ==========
 		#region Extracting
 
-		/**<summary>Extract an embedded resource.</summary>*/
-		public static string Extract(string resourcePath, byte[] resourceBytes) {
+		/**<summary>Extract an embedded resource from byte array.</summary>*/
+		public static void Extract(string resourcePath, byte[] resourceBytes) {
 			string dirName = Path.GetDirectoryName(resourcePath);
 			if (!Directory.Exists(dirName)) {
 				Directory.CreateDirectory(dirName);
@@ -31,7 +31,18 @@ namespace TerrariaRupeeReplacer.Xnb {
 			if (rewrite) {
 				File.WriteAllBytes(resourcePath, resourceBytes);
 			}
-			return resourcePath;
+		}
+		/**<summary>Extract an embedded resource from stream.</summary>*/
+		public static void Extract(string resourcePath, Stream resourceStream) {
+			byte[] resourceBytes = new byte[resourceStream.Length];
+			resourceStream.Read(resourceBytes, 0, resourceBytes.Length);
+
+			Extract(resourcePath, resourceBytes);
+		}
+		/**<summary>Extract an embedded resource from name.</summary>*/
+		public static void Extract(string resourcePath, string resourceName) {
+			Stream resourceStream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName);
+			Extract(resourcePath, resourceStream);
 		}
 
 		#endregion

@@ -1,9 +1,9 @@
 ﻿<Window x:Class="TerrariaRupeeReplacer.Windows.AboutWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="About Terraria Rupee Replacer" Background="#FFF0F0F0" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" ShowInTaskbar="False" Icon="/Resources/Icons/About.png" SnapsToDevicePixels="True" UseLayoutRounding="True" SizeToContent="WidthAndHeight">
+        Title="About Terraria Rupee Replacer" Background="#FFF0F0F0" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" ShowInTaskbar="False" Icon="/Resources/Icons/About.png" SnapsToDevicePixels="True" UseLayoutRounding="True" SizeToContent="WidthAndHeight" Loaded="OnWindowLoaded">
     
-    <Grid x:Name="clientArea" Width="384" Height="276">
+    <Grid x:Name="clientArea" Width="384" Height="270">
         <Rectangle Fill="#FFBB60AA" HorizontalAlignment="Left" Height="103" Margin="-71,-16,0,0" VerticalAlignment="Top" Width="211" RenderTransformOrigin="0.5,0.5">
             <Rectangle.RenderTransform>
                 <TransformGroup>
@@ -29,9 +29,9 @@
             </Grid>
         </GroupBox>
         <GroupBox Header="Description" Margin="10,143,10,40" BorderBrush="#FFA9B1B6">
-            <TextBlock TextWrapping="WrapWithOverflow" Text="Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupees. From sprites and sounds, to text and text color." Margin="4" Padding="4"/>
+            <TextBlock x:Name="textBlockDescription" TextWrapping="WrapWithOverflow" Text="Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupees. From sprites and sounds, to text and text color." Margin="4" Padding="4" VerticalAlignment="Top"/>
         </GroupBox>
-        <Button Content="Close" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="80" IsDefault="True" IsCancel="True"/>
 
+        <Button Content="Close" HorizontalAlignment="Right" Margin="0,0,10,10" VerticalAlignment="Bottom" Width="80" IsDefault="True" IsCancel="True"/>
     </Grid>
 </Window>

@@ -11,6 +11,9 @@ using System.Resources;
 using TerrariaRupeeReplacer.Properties;
 using System.Globalization;
 using System.Collections;
+using TerrariaRupeeReplacer.Xnb;
+using TerrariaRupeeReplacer.Util;
+using System.Threading;
 
 namespace TerrariaRupeeReplacer.Patching {
 	/**<summary>An exception thrown when the patcher is unable to locate the instructions to change.</summary>*/
@@ -111,10 +114,16 @@ namespace TerrariaRupeeReplacer.Patching {
 				File.Copy(ExePath, BackupPath, false);
 			}
 
-			// Load the assembly
-			AsmDefinition = AssemblyDefinition.ReadAssembly(ExePath);
-			ModDefinition = AsmDefinition.MainModule;
+			// Do this first so we don't bork the executable if copying fails
+			CopyRequiredFiles();
+			CopyLocalizationFiles();
 
+			// Load the assembly
+			var resolver = new EmbeddedAssemblyResolver();
+			var parameters = new ReaderParameters{ AssemblyResolver = resolver };
+			AsmDefinition = AssemblyDefinition.ReadAssembly(ExePath, parameters);
+			ModDefinition = AsmDefinition.MainModule;
+			
 			// Get links to Terraria types that will have their functions modified
 			Main = IL.GetTypeDefinition(ModDefinition, "Main");
 			Dust = IL.GetTypeDefinition(ModDefinition, "Dust");
@@ -144,13 +153,12 @@ namespace TerrariaRupeeReplacer.Patching {
 			Patch_ItemText_ValueToName();
 
 			Patch_LanguageManager_LoadLanguage();
-
+			
 			// Save the modifications
 			AsmDefinition.Write(ExePath);
+			// Wait for the exe to be closed by AsmDefinition.Write()
+			Thread.Sleep(400);
 			IL.MakeLargeAddressAware(ExePath);
-
-			CopyRequiredFiles();
-			CopyLocalizationFiles();
 		}
 
 		#endregion
@@ -161,9 +169,10 @@ namespace TerrariaRupeeReplacer.Patching {
 		private static void CopyRequiredFiles() {
 			try {
 				foreach (string file in RequireFiles) {
-					string source = Path.Combine(AppDirectory, file);
+					//string source = Path.Combine(AppDirectory, file);
 					string destination = Path.Combine(ExeDirectory, file);
-					File.Copy(source, destination, true);
+					//File.Copy(source, destination, true);
+					EmbeddedResources.Extract(destination, file);
 				}
 			}
 			catch (Exception ex) {
@@ -294,7 +303,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			);
 			CheckFailedToFindEnd(end, 0, functionName);
 
-			IL.MethodReplace(drawInventory, start, end,
+			IL.MethodReplaceRange(drawInventory, start, end,
 				Instruction.Create(OpCodes.Ldloc_S, num60),
 				Instruction.Create(OpCodes.Call, onReforgeCost),
 				Instruction.Create(OpCodes.Stloc_S, text3)
@@ -391,7 +400,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			);
 			CheckFailedToFindEnd(end, 0, functionName);
 
-			end = IL.MethodReplace(guiChatDrawInner, start, end,
+			end = IL.MethodReplaceRange(guiChatDrawInner, start, end,
 				Instruction.Create(OpCodes.Ldloca_S, focusText),
 				Instruction.Create(OpCodes.Ldloca_S, color2),
 				Instruction.Create(OpCodes.Ldloca_S, num6),
@@ -424,7 +433,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			);
 			CheckFailedToFindEnd(end, 1, functionName);
 
-			IL.MethodReplace(guiChatDrawInner, start, end,
+			IL.MethodReplaceRange(guiChatDrawInner, start, end,
 				Instruction.Create(OpCodes.Ldloca_S, focusText),
 				Instruction.Create(OpCodes.Ldloca_S, color2),
 				Instruction.Create(OpCodes.Ldloca_S, num6),
@@ -502,7 +511,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			int end = IL.ScanForInstructionPatternEnd(mouseText_DrawItemTooltip, start, checks);
 			CheckFailedToFindEnd(end, 0, functionName);
 
-			IL.MethodReplace(mouseText_DrawItemTooltip, start, end,
+			IL.MethodReplaceRange(mouseText_DrawItemTooltip, start, end,
 				Instruction.Create(OpCodes.Ldloc_S, color),
 				Instruction.Create(OpCodes.Ldloc_S, num4),
 				Instruction.Create(OpCodes.Ldloc_S, array),
@@ -520,11 +529,11 @@ namespace TerrariaRupeeReplacer.Patching {
 			var valueToCoins = IL.GetMethodDefinition(Main, "ValueToCoins", 1);
 			var onValueToCoins = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnValueToCoins"));
 			
-			IL.MethodReplace(valueToCoins, new[] {
+			IL.MethodReplace(valueToCoins,
 				Instruction.Create(OpCodes.Ldarg_0),
 				Instruction.Create(OpCodes.Call, onValueToCoins),
 				Instruction.Create(OpCodes.Ret)
-			});
+			);
 		}
 		/**<summary>Patches coin glowing when moving.</summary>*/
 		private static void Patch_Dust_UpdateDust() {
@@ -555,7 +564,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			);
 			CheckFailedToFindEnd(end, 0, functionName);
 			
-			IL.MethodReplace(updateDust, start, end,
+			IL.MethodReplaceRange(updateDust, start, end,
 				Instruction.Create(OpCodes.Ldloc_S, dust),
 				Instruction.Create(OpCodes.Call, onCoinGlow)
 			);
@@ -612,7 +621,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			);
 			CheckFailedToFindEnd(end, 0, functionName);
 
-			IL.MethodReplace(newText, start, end, 
+			IL.MethodReplaceRange(newText, start, end, 
 				Instruction.Create(OpCodes.Ldarg_0),
 				Instruction.Create(OpCodes.Ldloc_S, i),
 				Instruction.Create(OpCodes.Call, onCoinPickupText),
@@ -642,7 +651,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			);
 			CheckFailedToFindEnd(end, 1, functionName);
 			
-			IL.MethodReplace(newText, start, end, 
+			IL.MethodReplaceRange(newText, start, end, 
 				Instruction.Create(OpCodes.Ldarg_0),
 				Instruction.Create(OpCodes.Ldloc_S, num2),
 				Instruction.Create(OpCodes.Call, onCoinPickupText2)
@@ -660,7 +669,7 @@ namespace TerrariaRupeeReplacer.Patching {
 			);
 			CheckFailedToFindStart(start, 0, functionName);
 
-			IL.MethodAppend(loadLanguage, start,
+			IL.MethodInsert(loadLanguage, start,
 				Instruction.Create(OpCodes.Ldarg_1),
 				Instruction.Create(OpCodes.Call, onLoadLocalizations)
 			);

@@ -22,6 +22,7 @@ using Microsoft.Win32;
 using System.Xml;
 using System.Diagnostics;
 using System.Timers;
+using TerrariaRupeeReplacer.Util;
 
 namespace TerrariaRupeeReplacer {
 	/**<summary>The main window running Terraria Item Modifier.</summary>*/
@@ -97,7 +98,10 @@ namespace TerrariaRupeeReplacer {
 			radioButtonTMod.ToolTip = tmodText;
 
 			// Disable drag/drop text in textboxes so you can scroll their contents easily
-			DataObject.AddCopyingHandler(textBoxExe, (sender, e) => { if (e.IsDragDrop) e.CancelCommand(); });
+			DataObject.AddCopyingHandler(textBoxExe, OnTextBoxCancelDrag);
+
+			// Remove quotes from "Copy Path" command on paste
+			DataObject.AddPastingHandler(textBoxExe, OnTextBoxQuotesPaste);
 		}
 
 		#endregion
@@ -272,6 +276,29 @@ namespace TerrariaRupeeReplacer {
 				imagePortal.Viewbox = new Rect(0, portalFrame * 34, 32, 32);
 			});
 		}
+		private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e) {
+			// Make text boxes lose focus on click away
+			FocusManager.SetFocusedElement(this, this);
+		}
+		private void OnTextBoxCancelDrag(object sender, DataObjectCopyingEventArgs e) {
+			if (e.IsDragDrop)
+				e.CancelCommand();
+		}
+		private void OnTextBoxQuotesPaste(object sender, DataObjectPastingEventArgs e) {
+			var isText = e.SourceDataObject.GetDataPresent(DataFormats.UnicodeText, true);
+			if (!isText) return;
+
+			var text = e.SourceDataObject.GetData(DataFormats.UnicodeText) as string;
+			if (text.StartsWith("\"") || text.EndsWith("\"")) {
+				text = text.Trim('"');
+				Clipboard.SetText(text);
+			}
+		}
+
+		#endregion
+		//--------------------------------
+		#region Patching
+
 		private void OnPatch(object sender = null, RoutedEventArgs e = null) {
 			MessageBoxResult result;
 			if (!ValidPathTest())
@@ -302,7 +329,6 @@ namespace TerrariaRupeeReplacer {
 		}
 		private void OnRestore(object sender = null, RoutedEventArgs e = null) {
 			MessageBoxResult result;
-			MessageBoxResult result2;
 			bool cleanup = false;
 			if (!ValidPathTest())
 				return;
@@ -315,17 +341,22 @@ namespace TerrariaRupeeReplacer {
 				return;
 			cleanup = result == MessageBoxResult.Yes;
 			if (File.Exists(Patcher.ExePath) && IL.GetAssemblyVersion(Patcher.BackupPath) < IL.GetAssemblyVersion(Patcher.ExePath)) {
-				result2 = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
-				if (result2 == MessageBoxResult.No)
+				result = TriggerMessageBox.Show(this, MessageIcon.Warning, "The backed up Terraria executable is an older game version. Are you sure you want to restore it?", "Older Version", MessageBoxButton.YesNo);
+				if (result == MessageBoxResult.No)
 					return;
 			}
 			try {
-				Patcher.Restore(result == MessageBoxResult.Yes);
+				Patcher.Restore(cleanup);
 				bool someMissing = ContentReplacer.Restore();
 				// Clean up directory and remove config file
-				string configPath = Path.Combine(Patcher.ExeDirectory, CoinReplacer.ConfigName);
-				if (File.Exists(configPath))
-					File.Delete(configPath);
+				if (cleanup) {
+					string configPath = Path.Combine(Patcher.ExeDirectory, CoinReplacer.ConfigName);
+					string logPath = Path.Combine(Patcher.ExeDirectory, ErrorLogger.LogName);
+					if (File.Exists(configPath))
+						File.Delete(configPath);
+					if (File.Exists(logPath))
+						File.Delete(logPath);
+				}
 				if (someMissing)
 					TriggerMessageBox.Show(this, MessageIcon.Info, "Terraria executable restored but some backup content files were missing!", "Missing Content");
 				else
@@ -468,10 +499,17 @@ namespace TerrariaRupeeReplacer {
 
 		private void OnLaunchTerraria(object sender, RoutedEventArgs e) {
 			try {
-				if (File.Exists(Patcher.ExePath))
+				if (File.Exists(Patcher.ExePath)) {
 					Process.Start(Patcher.ExePath);
-				else
+					ProcessStartInfo start = new ProcessStartInfo();
+					start.FileName = Patcher.ExePath;
+					start.Arguments = TerrariaLocator.FindTerraLauncherSaveDirectory(Patcher.ExePath);
+					start.WorkingDirectory = Patcher.ExeDirectory;
+					Process.Start(start);
+				}
+				else {
 					TriggerMessageBox.Show(this, MessageIcon.Warning, "Could not locate the Terraria executable! Cannot launch Terraria.", "Missing Executable");
+				}
 			}
 			catch {
 				TriggerMessageBox.Show(this, MessageIcon.Warning, "The current path to Terraria is invalid! Cannot launch Terraria.", "Invalid Path");
