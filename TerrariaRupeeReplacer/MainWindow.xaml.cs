@@ -500,7 +500,6 @@ namespace TerrariaRupeeReplacer {
 		private void OnLaunchTerraria(object sender, RoutedEventArgs e) {
 			try {
 				if (File.Exists(Patcher.ExePath)) {
-					Process.Start(Patcher.ExePath);
 					ProcessStartInfo start = new ProcessStartInfo();
 					start.FileName = Patcher.ExePath;
 					start.Arguments = TerrariaLocator.FindTerraLauncherSaveDirectory(Patcher.ExePath);

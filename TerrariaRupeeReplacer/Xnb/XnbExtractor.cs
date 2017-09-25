@@ -86,70 +86,77 @@ namespace TerrariaRupeeReplacer.Xnb {
 
 		/**<summary>Extracts and returns a bitmap.</summary>*/
 		public static Bitmap ExtractBitmap(string inputFile) {
-			BinaryReader reader = new BinaryReader(new MemoryStream(File.ReadAllBytes(inputFile)));
+			using (MemoryStream inputStream = new MemoryStream(File.ReadAllBytes(inputFile))) {
+				BinaryReader reader = new BinaryReader(inputStream);
+				if (!reader.ReadAndCompareString("XNB")) {
+					reader.Close();
+					throw new XnbException("Not an XNB file: " + Path.GetFileName(inputFile) + ".");
+				}
 
-			if (!reader.ReadAndCompareString("XNB")) {
-				throw new XnbException("Not an XNB file: " + Path.GetFileName(inputFile) + ".");
-			}
+				// Ignore target platform, it shouldn't matter
+				int targetPlatform = reader.ReadByte();
 
-			// Ignore target platform, it shouldn't matter
-			int targetPlatform = reader.ReadByte();
+				int version = reader.ReadByte();
+				if (version != 5) {
+					reader.Close();
+					throw new XnbException("Unsupported XNB version: " + version + ".");
+				}
 
-			int version = reader.ReadByte();
-			if (version != 5) {
-				throw new XnbException("Unsupported XNB version: " + version + ".");
-			}
+				bool compressed = (reader.ReadByte() & 0x80) != 0;
 
-			bool compressed = (reader.ReadByte() & 0x80) != 0;
+				int compressedSize = reader.ReadInt32();
+				int decompressedSize = (compressed ? reader.ReadInt32() : compressedSize);
 
-			int compressedSize = reader.ReadInt32();
-			int decompressedSize = (compressed ? reader.ReadInt32() : compressedSize);
+				if (compressed) {
+					MemoryStream decompressedStream = new MemoryStream(decompressedSize);
 
-			if (compressed) {
-				MemoryStream decompressedStream = new MemoryStream(decompressedSize);
+					lzxDecoder.Decompress(reader, compressedSize - HeaderSize, decompressedStream, decompressedSize);
 
-				lzxDecoder.Decompress(reader, compressedSize - HeaderSize, decompressedStream, decompressedSize);
+					decompressedStream.Position = 0;
 
-				decompressedStream.Position = 0;
+					reader.Close();
+					reader = new BinaryReader(decompressedStream);
+				}
 
-				reader.Close();
-				reader = new BinaryReader(decompressedStream);
-			}
+				int typeReaderCount = reader.Read7BitEncodedInt();
 
-			int typeReaderCount = reader.Read7BitEncodedInt();
-
-			// The first type reader is used for reading the primary asset
-			string typeReaderName = reader.Read7BitEncodedString();
-			// The type reader version - Dosen't matter
-			reader.ReadInt32();
-
-			// Type reader names MIGHT contain assembly information
-			int assemblyInformationIndex = typeReaderName.IndexOf(',');
-			if (assemblyInformationIndex != -1)
-				typeReaderName = typeReaderName.Substring(0, assemblyInformationIndex);
-
-			// Skip the remaining type readers, as all types are known
-			for (int k = 1; k < typeReaderCount; k++) {
-				reader.Read7BitEncodedString();
+				// The first type reader is used for reading the primary asset
+				string typeReaderName = reader.Read7BitEncodedString();
+				// The type reader version - Dosen't matter
 				reader.ReadInt32();
-			}
 
-			// Shared resources are unused by Terraria assets
-			if (reader.Read7BitEncodedInt() != 0) {
-				throw new XnbException("Shared resources are not supported.");
-			}
+				// Type reader names MIGHT contain assembly information
+				int assemblyInformationIndex = typeReaderName.IndexOf(',');
+				if (assemblyInformationIndex != -1)
+					typeReaderName = typeReaderName.Substring(0, assemblyInformationIndex);
 
-			if (reader.Read7BitEncodedInt() != 1) {
-				throw new XnbException("Primary asset is null; this shouldn't happen.");
-			}
+				// Skip the remaining type readers, as all types are known
+				for (int k = 1; k < typeReaderCount; k++) {
+					reader.Read7BitEncodedString();
+					reader.ReadInt32();
+				}
 
-			// Switch on the type reader name, excluding assembly information
-			switch (typeReaderName) {
-			case "Microsoft.Xna.Framework.Content.Texture2DReader":
-				return ReadTexture2D(reader);
+				// Shared resources are unused by Terraria assets
+				if (reader.Read7BitEncodedInt() != 0) {
+					reader.Close();
+					throw new XnbException("Shared resources are not supported.");
+				}
 
-			default:
-				throw new XnbException("Unsupported asset type: " + typeReaderName + ".");
+				if (reader.Read7BitEncodedInt() != 1) {
+					reader.Close();
+					throw new XnbException("Primary asset is null; this shouldn't happen.");
+				}
+
+				// Switch on the type reader name, excluding assembly information
+				switch (typeReaderName) {
+				case "Microsoft.Xna.Framework.Content.Texture2DReader":
+					reader.Close();
+					return ReadTexture2D(reader);
+
+				default:
+					reader.Close();
+					throw new XnbException("Unsupported asset type: " + typeReaderName + ".");
+				}
 			}
 		}
 		/**<summary>Reads an Xnb Texture2D.</summary>*/

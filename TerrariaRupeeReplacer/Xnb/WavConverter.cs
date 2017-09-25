@@ -85,9 +85,9 @@ namespace TerrariaRupeeReplacer.Xnb {
 				waveData = reader.ReadBytes(dataChunkSize);
 			}
 
-			using (FileStream stream = new FileStream(outputFile, FileMode.OpenOrCreate)) {
-				using (BinaryWriter writer = new BinaryWriter(stream)) {
-					stream.SetLength(0);
+			using (FileStream outputStream = new FileStream(outputFile, FileMode.OpenOrCreate)) {
+				using (BinaryWriter writer = new BinaryWriter(outputStream)) {
+					outputStream.SetLength(0);
 					
 					writer.Write(Encoding.UTF8.GetBytes("XNB")); // Format identifier
 					writer.Write(Encoding.UTF8.GetBytes("w")); // TargetPlatform Windows
