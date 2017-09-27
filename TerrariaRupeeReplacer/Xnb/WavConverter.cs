@@ -53,10 +53,10 @@ namespace TerrariaRupeeReplacer.Xnb {
 				if (format != "fmt ")
 					throw new WavException("No fmt tag.");
 
-				int a = reader.ReadInt32();
-				if (a < 16)
+				int chunkSize = reader.ReadInt32();
+				if (chunkSize < 16)
 					throw new WavException("Incorrect format length.");
-				a += (int)reader.BaseStream.Position;
+				chunkSize += (int)reader.BaseStream.Position;
 
 				if ((wFormatTag = reader.ReadUInt16()) != 1)
 					throw new Exception("Unimplemented wav codec (must be PCM).");
@@ -71,17 +71,24 @@ namespace TerrariaRupeeReplacer.Xnb {
 
 				wBitsPerSample = reader.ReadUInt16();
 
-				reader.BaseStream.Position = a;
-
-				format = new string(reader.ReadChars(4));
-				if (format != "data") throw new WavException("No data tag.");
-
 				if (nAvgBytesPerSec != (nSamplesPerSec * nChannels * (wBitsPerSample / 8)))
 					throw new WavException("Average bytes per second number incorrect.");
 				if (nBlockAlign != (nChannels * (wBitsPerSample / 8)))
 					throw new WavException("Block align number incorrect.");
+				
+				inputStream.Position = chunkSize;
 
+				format = new string(reader.ReadChars(4));
 				dataChunkSize = reader.ReadInt32();
+				while (format != "data") {
+					inputStream.Position += dataChunkSize;
+					format = new string(reader.ReadChars(4));
+					dataChunkSize = reader.ReadInt32();
+					if (dataChunkSize < 0 || dataChunkSize + (int)inputStream.Position > (int)inputStream.Length)
+						break;
+				}
+				if (format != "data") throw new WavException("No data tag.");
+
 				waveData = reader.ReadBytes(dataChunkSize);
 			}
 

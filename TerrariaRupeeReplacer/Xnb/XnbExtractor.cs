@@ -150,8 +150,10 @@ namespace TerrariaRupeeReplacer.Xnb {
 				// Switch on the type reader name, excluding assembly information
 				switch (typeReaderName) {
 				case "Microsoft.Xna.Framework.Content.Texture2DReader":
+					
+					Bitmap bitmap = ReadTexture2D(reader);
 					reader.Close();
-					return ReadTexture2D(reader);
+					return bitmap;
 
 				default:
 					reader.Close();
