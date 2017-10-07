@@ -446,7 +446,7 @@ namespace TerrariaRupeeReplacer.Patching {
 
 			var mouseText_DrawItemTooltip = IL.GetMethodDefinition(Main, "MouseText_DrawItemTooltip", 4);
 			var onNPCShopPrice = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnNPCShopPrice"));
-
+			
 			var storeValue = IL.ScanForVariablePattern(mouseText_DrawItemTooltip,
 				IL.CheckField(OpCodes.Ldsfld, "Main::npcShop"),
 				IL.Check(OpCodes.Ldc_I4_0),
@@ -484,6 +484,16 @@ namespace TerrariaRupeeReplacer.Patching {
 			);
 			CheckFailedToFindVariable(num4, "num4", functionName);
 
+			var array4 = IL.ScanForVariablePattern(mouseText_DrawItemTooltip, start,
+				IL.VarCheck(LocOpCodes.Ldloc),
+				IL.Check(LocOpCodes.Ldloc, num4),
+				IL.Check(OpCodes.Ldstr, "Price"),
+				IL.Check(OpCodes.Stelem_Ref)
+			);
+			if (IsTMod) {
+				CheckFailedToFindVariable(array4, "array4", functionName);
+			}
+
 			var checks = new IL.OperandCheck[] {
 				IL.VarCheck(LocOpCodes.Ldloca),
 				IL.Check(OpCodes.Ldc_R4, 246f),
@@ -511,13 +521,23 @@ namespace TerrariaRupeeReplacer.Patching {
 			int end = IL.ScanForInstructionPatternEnd(mouseText_DrawItemTooltip, start, checks);
 			CheckFailedToFindEnd(end, 0, functionName);
 
-			IL.MethodReplaceRange(mouseText_DrawItemTooltip, start, end,
+			start = IL.MethodReplaceRange(mouseText_DrawItemTooltip, start, end,
 				Instruction.Create(OpCodes.Ldloc_S, color),
 				Instruction.Create(OpCodes.Ldloc_S, num4),
 				Instruction.Create(OpCodes.Ldloc_S, array),
 				Instruction.Create(OpCodes.Ldloc_S, storeValue),
 				Instruction.Create(OpCodes.Call, onNPCShopPrice),
-				Instruction.Create(OpCodes.Stloc_S, color),
+				Instruction.Create(OpCodes.Stloc_S, color)
+			);
+			if (IsTMod) {
+				start = IL.MethodInsert(mouseText_DrawItemTooltip, start,
+					Instruction.Create(OpCodes.Ldloc_S, array4),
+					Instruction.Create(OpCodes.Ldloc_S, num4),
+					Instruction.Create(OpCodes.Ldstr, "Price"),
+					Instruction.Create(OpCodes.Stelem_Ref)
+				);
+			}
+			IL.MethodInsert(mouseText_DrawItemTooltip, start,
 				Instruction.Create(OpCodes.Ldloc_S, num4),
 				Instruction.Create(OpCodes.Ldc_I4_1),
 				Instruction.Create(OpCodes.Add),
