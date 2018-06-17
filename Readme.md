@@ -7,14 +7,14 @@ Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupee
 
 ### [Wiki](https://github.com/trigger-death/TerrariaRupeeReplacer/wiki) | [Credits](https://github.com/trigger-death/TerrariaRupeeReplacer/wiki/Credits) | [Image Album](http://imgur.com/a/4LfHT)
 
-### [![Get Terraria Rupee Replacer](http://i.imgur.com/h7h8ES2.png)](https://github.com/trigger-death/TerrariaRupeeReplacer/releases/tag/1.0.2.4)
+### [![Get Terraria Rupee Replacer](http://i.imgur.com/h7h8ES2.png)](https://github.com/trigger-death/TerrariaRupeeReplacer/releases/tag/1.0.3.0)
 
 ## About
 
 * **Created By:** Robert Jordan
-* **Version:** 1.0.2.4 (Hotfix)
+* **Version:** 1.0.3.0 (tMod fix)
 * **Language:** C#, WPF
-* **Supports:** Vanilla v1.3.5.3 | tModLoader v0.10.1 (v1.3.5.1)
+* **Supports:** Vanilla v1.3.5.3 | tModLoader v0.10.1.4 (v1.3.5.1)
 
 ## Requirements for Running
 * .NET Framework 4.5.2 | [Offline Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42642) | [Web Installer](https://www.microsoft.com/en-us/download/details.aspx?id=42643)
