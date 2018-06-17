@@ -40,7 +40,7 @@ namespace TerrariaRupeeReplacer {
 		/**<summary>The highest supported version of tModLoader Terraria.</summary>*/
 		private static readonly Version TModSupportedVersionHigh = new Version("1.3.5.1");
 		/**<summary>The supported version of tModLoader.</summary>*/
-		private static readonly Version TModSupportedVersion = new Version("0.10.1.0");
+		private static readonly Version TModSupportedVersion = new Version("0.10.1.4");
 
 		#endregion
 		//========== PROPERTIES ==========

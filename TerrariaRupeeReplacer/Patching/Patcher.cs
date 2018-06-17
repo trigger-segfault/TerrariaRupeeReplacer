@@ -257,15 +257,17 @@ namespace TerrariaRupeeReplacer.Patching {
 
 			var drawInventory = IL.GetMethodDefinition(Main, "DrawInventory", 0);
 			var onReforgeCost = ModDefinition.Import(IL.GetMethodDefinition(CoinReplacer, "OnReforgeCost"));
-			
+
 			var checks = new IL.OperandCheck[] {
 				IL.CheckField(OpCodes.Ldsfld, "Main::reforgeItem"),
 				IL.CheckField(OpCodes.Ldfld, "Item::type"),
 				IL.Check(OpCodes.Ldc_I4_0),
 				IL.Check(OpCodes.Ble),
+				IL.CheckSkipIndefinite(), // TMod fix
 				IL.CheckField(OpCodes.Ldsfld, "Main::reforgeItem"),
 				IL.CheckField(OpCodes.Ldfld, "Item::value"),
 				IL.VarCheck(LocOpCodes.Stloc),
+				IL.CheckSkipIndefinite(),
 				IL.CheckField(OpCodes.Ldsfld, "Main::player"),
 				IL.CheckField(OpCodes.Ldsfld, "Main::myPlayer"),
 				IL.Check(OpCodes.Ldelem_Ref),
