@@ -12,7 +12,7 @@ Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupee
 ## About
 
 * **Created By:** Robert Jordan
-* **Version:** 1.0.3.0 (tMod fix)
+* **Version:** 1.0.3.0 (tModLoader patch)
 * **Language:** C#, WPF
 * **Supports:** Vanilla v1.3.5.3 | tModLoader v0.10.1.4 (v1.3.5.1)
 
