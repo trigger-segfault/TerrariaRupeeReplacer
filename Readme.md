@@ -1,4 +1,15 @@
+
 # Terraria Rupee Replacer ![AppIcon](http://i.imgur.com/RmM4SEj.png)
+[![Latest Release](https://img.shields.io/github/release/trigger-death/TerrariaRupeeReplacer.svg?style=flat&label=version)](https://github.com/trigger-death/TerrariaRupeeReplacer/releases/latest)
+[![Latest Release Date](https://img.shields.io/github/release-date-pre/trigger-death/TerrariaRupeeReplacer.svg?style=flat&label=released)](https://github.com/trigger-death/TerrariaRupeeReplacer/releases/latest)
+[![Total Downloads](https://img.shields.io/github/downloads/trigger-death/TerrariaRupeeReplacer/total.svg?style=flat)](https://github.com/trigger-death/TerrariaRupeeReplacer/releases)
+[![Creation Date](https://img.shields.io/badge/created-september%202017-A642FF.svg?style=flat)](https://github.com/trigger-death/TerrariaRupeeReplacer/commit/3d62d860f6d6e8036b49f44fa29c4d874533d197)
+[![Terraria Forums](https://img.shields.io/badge/terraria-forums-28A828.svg?style=flat)](https://forums.terraria.org/index.php?threads/61916/)
+<!--![Supported Versions](https://img.shields.io/badge/supports->-555555.svg?style=flat)-->
+### Supports:
+![Vanilla v1.3.5.3](https://img.shields.io/badge/vanilla-v1.3.5.3-20AB51.svg?style=flat)
+![tModLoader v0.10.1.4](https://img.shields.io/badge/tModLoader-v0.10.1.4-5EA002.svg?style=flat)
+
 Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupees. From sprites and sounds, to text and text color. The program also allows the user to select which color rupees to use.
 
 **Note:** Although a RupeeConfig.xml file is created in the Terraria executable directory, modifying this will not change rupee sprites. RupeeConfig.xml is for internal use only. Instead you can use the Update Content option in the patcher to only modify the content files.
@@ -7,7 +18,7 @@ Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupee
 
 ### [Wiki](https://github.com/trigger-death/TerrariaRupeeReplacer/wiki) | [Credits](https://github.com/trigger-death/TerrariaRupeeReplacer/wiki/Credits) | [Image Album](http://imgur.com/a/4LfHT)
 
-### [![Get Terraria Rupee Replacer](http://i.imgur.com/h7h8ES2.png)](https://github.com/trigger-death/TerrariaRupeeReplacer/releases/tag/1.0.3.0)
+### [![Get Terraria Rupee Replacer](http://i.imgur.com/h7h8ES2.png)](https://github.com/trigger-death/TerrariaRupeeReplacer/releases/latest)
 
 ## About
 
