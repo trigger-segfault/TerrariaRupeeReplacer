@@ -5,6 +5,7 @@
 [![Total Downloads](https://img.shields.io/github/downloads/trigger-death/TerrariaRupeeReplacer/total.svg?style=flat)](https://github.com/trigger-death/TerrariaRupeeReplacer/releases)
 [![Creation Date](https://img.shields.io/badge/created-september%202017-A642FF.svg?style=flat)](https://github.com/trigger-death/TerrariaRupeeReplacer/commit/3d62d860f6d6e8036b49f44fa29c4d874533d197)
 [![Terraria Forums](https://img.shields.io/badge/terraria-forums-28A828.svg?style=flat)](https://forums.terraria.org/index.php?threads/61916/)
+[![Discord](https://img.shields.io/discord/436949335947870238.svg?style=flat&logo=discord&label=chat&colorB=7389DC&link=https://discord.gg/vB7jUbY)](https://discord.gg/vB7jUbY)
 <!--![Supported Versions](https://img.shields.io/badge/supports->-555555.svg?style=flat)-->
 
 Terraria Rupee Replacer is a patcher for turning all aspects of coins into rupees. From sprites and sounds, to text and text color. The program also allows the user to select which color rupees to use.
